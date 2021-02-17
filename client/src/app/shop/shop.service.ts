@@ -9,6 +9,8 @@ import { IProduct } from '../shared/models/product';
 @Injectable({
   providedIn: 'root'
 })
+// bất cứ khi nào có sự thay đổi của dữ liệu trong luồng thì phương thức subscribe sẽ được thực thi.
+//
 export class ShopService {
   baseUrl = 'https://localhost:5001/api/';
 
@@ -31,7 +33,6 @@ export class ShopService {
     params = params.append('pageSize',shopParams.pageSize.toString());
     return this.http.get<IPagination>(this.baseUrl + 'products',{observe: 'response',params})
     .pipe(
-      delay(1000),
       map(response => {
         return response.body;
       })
