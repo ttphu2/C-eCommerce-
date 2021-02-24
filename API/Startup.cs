@@ -22,6 +22,7 @@ namespace API
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        //Khai bao cac service minh su dung
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -35,7 +36,7 @@ namespace API
             //kết nối StackExchange.Redis => cai thu vien chon Infactructure
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
-                var configuration = ConfigurationOptions.Parse(_config.GetConnectionString("Redis"),true);
+                var configuration = ConfigurationOptions.Parse(_config.GetConnectionString("Redis"), true);
                 return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddApplicationServices();
@@ -51,6 +52,7 @@ namespace API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        //pipeline dung de xac dinh service nao chay truoc service nao chay sau
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // if (env.IsDevelopment())
