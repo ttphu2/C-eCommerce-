@@ -16,12 +16,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     const basketId = localStorage.getItem('basket_id');
-    if(basketId) {
+    if (basketId) {
       this.basketService.getBasket(basketId).subscribe(() => {
         console.log('initialised basket');
       }, error => {
         console.log(error);
-      })
+      });
     }
   }
 
