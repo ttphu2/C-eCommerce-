@@ -1,6 +1,6 @@
-namespace Core.Entities.Identity
+namespace API.Dtos
 {
-    public class Address
+    public class AddressDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -10,6 +10,5 @@ namespace Core.Entities.Identity
         public string State { get; set; }
         public string Zipcode { get; set; }
         public string AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
     }
 }

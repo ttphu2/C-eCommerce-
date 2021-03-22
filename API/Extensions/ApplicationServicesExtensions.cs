@@ -3,6 +3,7 @@ using API.Errors;
 using API.Middleware;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,7 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+             services.AddScoped<ITokenService, TokenService>();
             // Tiêm logger cho class ExceptionMiddleware
             services.AddSingleton<Microsoft.Extensions.Logging.ILogger>(provider =>
             provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<ExceptionMiddleware>>());

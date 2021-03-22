@@ -48,7 +48,7 @@ namespace API
                 return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddApplicationServices();
-            services.AddIdentityServices();
+            services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();
             services.AddCors(opt =>
             {
@@ -83,8 +83,11 @@ namespace API
             app.UseStaticFiles();
             //kích hoạt CORS
             app.UseCors("CorsPolicy");
+           
 
-            app.UseAuthorization();
+            app.UseAuthentication(); // Phục hồi thông tin đăng nhập (xác thực)
+            app.UseAuthorization();// Phục hồi thông tinn về quyền của User
+
             app.UseSwaggerDocumention();
 
             app.UseEndpoints(endpoints =>

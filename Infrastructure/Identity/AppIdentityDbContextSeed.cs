@@ -20,13 +20,13 @@ namespace Infrastructure.Identity
                     {
                         FirstName = "Bob",
                         LastName = "Bobbity",
-                        //thieu street
+                        Street = " 10 ton that thuyet",
                         City = "New York",
-                        State = 1,
+                        State = "NY",
                         Zipcode = "90210"
                     }
                 };
-                await userManager.CreateAsync(user,"Pa$$w0rd");
+                await userManager.CreateAsync(user, "Pa$$w0rd");
             }
 
 
