@@ -24,7 +24,7 @@ import { HomeModule } from './home/home.module';
     NgxSpinnerModule,
     HomeModule
   ],
-  //hãy luôn sử dụng multi = true để tránh việc nhà cung cấp đầu tiên không được đưa vào.
+  // hãy luôn sử dụng multi = true để tránh việc nhà cung cấp đầu tiên không được đưa vào.
 
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
