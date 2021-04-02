@@ -13,7 +13,10 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-             services.AddScoped<ITokenService, TokenService>();
+
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Tiêm logger cho class ExceptionMiddleware
             services.AddSingleton<Microsoft.Extensions.Logging.ILogger>(provider =>
             provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<ExceptionMiddleware>>());
