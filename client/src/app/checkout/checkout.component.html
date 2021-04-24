@@ -6,9 +6,7 @@
           [label]="'Address'"
           [completed]="checkoutForm.get('addressForm')?.valid"
         >
-          <app-checkout-address
-            [checkoutForm]="checkoutForm"
-          ></app-checkout-address>
+          <app-checkout-address [checkoutForm]="checkoutForm"></app-checkout-address>
         </cdk-step>
         <cdk-step
           [label]="'Delivery'"
@@ -19,7 +17,7 @@
           ></app-checkout-delivery>
         </cdk-step>
         <cdk-step [label]="'Review'">
-          <app-checkout-review></app-checkout-review>
+          <app-checkout-review [appStepper]="appStepper"></app-checkout-review>
         </cdk-step>
         <cdk-step [label]="'Payment'">
           <app-checkout-payment

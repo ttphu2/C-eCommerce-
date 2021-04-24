@@ -16,6 +16,7 @@ namespace API.Extensions
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Tiêm logger cho class ExceptionMiddleware
             services.AddSingleton<Microsoft.Extensions.Logging.ILogger>(provider =>
