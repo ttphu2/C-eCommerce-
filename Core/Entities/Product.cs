@@ -14,6 +14,30 @@ namespace Core.Entities
         public int ProductBrandId { get; set; }
         private readonly List<Photo> _photos = new List<Photo>();
         public IReadOnlyList<Photo> Photos => _photos.AsReadOnly();
+        private readonly List<ProductSize> _productSizes = new List<ProductSize>();
+        public IReadOnlyList<ProductSize> ProductSizes => _productSizes.AsReadOnly();
+        public void DecrementQuantity(int id, int Quantity)
+        {
+            var productSize = _productSizes.Find(x => x.Id == id);
+            productSize.Quantity = productSize.Quantity - Quantity;
+
+        }
+        public void AddProductSize(int size, int quantity = 1)
+        {
+            var productSize = new ProductSize
+            {
+                Size = size,
+                Quantity = quantity
+            };
+
+            _productSizes.Add(productSize);
+        }
+        public void RemoveProductSize(int id)
+        {
+            var productSize = _productSizes.Find(x => x.Id == id);
+            _productSizes.Remove(productSize);
+        }
+
         public void AddPhoto(string pictureUrl, string fileName, bool isMain = false)
         {
             var photo = new Photo

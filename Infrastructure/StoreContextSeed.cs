@@ -60,6 +60,7 @@ namespace Infrastructure
                             ProductTypeId = item.ProductTypeId
                         };
                         product.AddPhoto(item.PictureUrl, pictureFileName);
+                        product.AddProductSize(36, 1);
                         context.Products.Add(product);
                     }
                     await context.SaveChangesAsync();

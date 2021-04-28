@@ -32,7 +32,7 @@ namespace Infrastructure.Service
             {
                 var specProduct = new ProductWithTypesAndBrandsSpecification(item.Id);
                 var productItem = await _unitOfWork.Repository<Product>().GetEntityWithSpec(specProduct);
-                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name,
+                var itemOrdered = new ProductItemOrdered(productItem.Id, item.Size, productItem.Name,
                  productItem.Photos.FirstOrDefault(x => x.IsMain)?.PictureUrl);
                 var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
                 items.Add(orderItem);

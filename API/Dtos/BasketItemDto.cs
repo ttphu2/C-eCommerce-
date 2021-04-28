@@ -15,6 +15,9 @@ namespace API.Dtos
         [Range(1, double.MaxValue, ErrorMessage = "Quantity must be at least 1")]
         public int Quantity { get; set; }
         [Required]
+        [Range(36, 46, ErrorMessage = "Size must be at >36 and <46")]
+        public int Size { get; set; }
+        [Required]
         public string PictureUrl { get; set; }
         [Required]
         public string Brand { get; set; }

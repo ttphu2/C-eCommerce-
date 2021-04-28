@@ -5,6 +5,7 @@ import { IProduct } from 'src/app/shared/models/product';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShopService } from '../shop.service';
 import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryImageSize, NgxGalleryOptions} from '@kolkov/ngx-gallery';
+import { FormBuilder, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
@@ -13,15 +14,21 @@ import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryImageSize, NgxGalleryOpt
 export class ProductDetailsComponent implements OnInit {
   product: IProduct;
   quantity = 1;
+  size = 0;
+  myForm: FormGroup;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
+
   constructor(private shopService: ShopService, private activeRoute: ActivatedRoute, private bcService: BreadcrumbService,
-              private basketService: BasketService) {
+              private basketService: BasketService, private formBuilder: FormBuilder) {
     this.bcService.set('@productDetails', ' ');
   }
 
   ngOnInit(): void {
     this.loadProduct();
+    this.myForm = this.formBuilder.group({
+      radio: '38'
+    });
   }
   initializeGallery() {
     this.galleryOptions = [
@@ -51,18 +58,22 @@ export class ProductDetailsComponent implements OnInit {
     return imageUrls;
   }
   addItemToBasket() {
-    this.basketService.addItemToBasket(this.product, this.quantity);
+
+    this.basketService.addItemToBasket(this.product, this.quantity, +this.size);
   }
   incrementQuantity() {
     this.quantity++;
+  }
+  onButtonGroupClick($event: any) {
+    console.log($event);
+
+
   }
   decrementQuantity() {
     if (this.quantity > 1){
       this.quantity--;
     }
-
   }
-
   loadProduct(){
     this.shopService.getProduct(Number(this.activeRoute.snapshot.paramMap.get('id'))).subscribe(product => {
       this.product = product;

@@ -10,6 +10,27 @@
     <div class="col-6">
       <h3>{{ product.name }}</h3>
       <p style="font-size: 2em">{{ product.price | currency }}</p>
+
+      <div
+        class="d-flex flex-wrap justify-content-start align-items-center mb-3"
+        btnRadioGroup
+        [(ngModel)]="size"
+      >
+          <label
+           *ngFor="let prdsize of product?.productSizes"
+            btnRadio="{{ prdsize.size }}"
+            class="btn btn-outline-dark p-2 swatch-element"
+            [class.active]="size == prdsize.size"
+            >{{ prdsize.size }}
+          </label>
+          <label
+            btnRadio="37"
+            class="btn btn-outline-dark p-2 swatch-element"
+            [class.active]="size == 37"
+            >37
+          </label>
+
+      </div>
       <div class="d-flex justify-content-start align-items-center">
         <i
           (click)="decrementQuantity()"

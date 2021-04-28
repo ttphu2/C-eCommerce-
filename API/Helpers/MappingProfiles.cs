@@ -22,9 +22,11 @@ namespace API.Helpers
             CreateMap<Order, OrderToReturnDto>()
             .ForMember(d => d.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
             .ForMember(d => d.ShippingPrice, o => o.MapFrom(s => s.DeliveryMethod.Price));
+            
             CreateMap<OrderItem, OrderItemDto>()
             .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ItemOrdered.ProductItemId))
             .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ItemOrdered.ProductName))
+            .ForMember(d => d.Size, o => o.MapFrom(s => s.ItemOrdered.Size))
             .ForMember(d => d.PictureUrl, o => o.MapFrom(s => s.ItemOrdered.PictureUrl))
             .ForMember(d => d.PictureUrl, o => o.MapFrom<OrderItemUrlResolver>())
             ;
@@ -32,6 +34,8 @@ namespace API.Helpers
             CreateMap<Photo, PhotoToReturnDto>()
                 .ForMember(d => d.PictureUrl, 
                     o => o.MapFrom<PhotoUrlResolver>());
+            CreateMap<ProductSize, ProductSizeToReturnDto>();
+        
 
             
 

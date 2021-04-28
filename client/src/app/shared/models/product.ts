@@ -7,12 +7,18 @@ export interface IProduct {
   productType: string;
   productBrand: string;
   photos: IPhoto[];
+  productSizes: IProductSize[];
 }
 export interface IPhoto {
   id: number;
   pictureUrl: string;
   fileName: string;
   isMain: boolean;
+}
+export interface IProductSize {
+  id: number;
+  quantity: number;
+  size: number;
 }
 export interface IProductToCreate {
   name: string;

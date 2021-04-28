@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
 import {CurrencyMaskModule} from 'ng2-currency-mask';
 import {NgxGalleryModule} from '@kolkov/ngx-gallery';
 import {TabsModule} from 'ngx-bootstrap/tabs';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { PhotoWidgetComponent } from './components/photo-widget/photo-widget.component';
 import {ImageCropperModule} from 'ngx-image-cropper';
 import { NgxDropzoneModule } from 'ngx-dropzone';
@@ -35,7 +36,8 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     NgxGalleryModule,
     TabsModule.forRoot(),
     NgxDropzoneModule,
-    ImageCropperModule
+    ImageCropperModule,
+    ButtonsModule.forRoot()
 
   ],
   exports: [
@@ -56,7 +58,8 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     TabsModule,
     NgxDropzoneModule,
     ImageCropperModule,
-    PhotoWidgetComponent
+    PhotoWidgetComponent,
+    ButtonsModule
    ]
 })
 export class SharedModule { }
