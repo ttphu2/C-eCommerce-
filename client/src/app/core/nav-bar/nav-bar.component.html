@@ -20,6 +20,13 @@
     <a class="p-2" routerLink="/test-error" routerLinkActive="active"
       >Contact</a
     >
+    <a
+      *ngIf="isAdmin$ | async"
+      class="p-2"
+      routerLink="/admin"
+      routerLinkActive="active"
+      >Admin</a
+    >
   </nav>
   <div class="d-flex align-items-center">
     <a routerLink="/basket" class="position-relative">
@@ -53,16 +60,23 @@
           style="cursor: pointer"
           *dropdownMenu
         >
-          <a routerLink="/basket" class="dropdown-item d-flex align-items-center py-2">
+          <a
+            routerLink="/basket"
+            class="dropdown-item d-flex align-items-center py-2"
+          >
             <i class="fa fa-shopping-cart mr-3"></i> View Basket
           </a>
-          <a routerLink="/orders" class="dropdown-item d-flex align-items-center py-2">
+          <a
+            routerLink="/orders"
+            class="dropdown-item d-flex align-items-center py-2"
+          >
             <i class="fa fa-history mr-3"></i> View Orders
           </a>
-          <div class="dropdown-divider">
-
-          </div>
-          <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
+          <div class="dropdown-divider"></div>
+          <a
+            (click)="logout()"
+            class="dropdown-item d-flex align-items-center py-2"
+          >
             <i class="fa fa-sign-out mr-3"></i> Logout
           </a>
         </div>

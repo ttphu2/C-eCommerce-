@@ -74,6 +74,7 @@ ngAfterViewInit(): void {
   async submitOrder() {
     this.loading = true;
     const basket = this.basketService.getCurrentBasketValue();
+    console.log(basket);
     try {
     const createdOrder = await this.createOrder(basket);
     const paymentResult = await this.confirmPaymentWithStripe(basket);

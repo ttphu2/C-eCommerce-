@@ -30,9 +30,10 @@ namespace Infrastructure.Service
             var items = new List<OrderItem>();
             foreach (var item in basket.Items)
             {
-                var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+                var specProduct = new ProductWithTypesAndBrandsSpecification(item.Id);
+                var productItem = await _unitOfWork.Repository<Product>().GetEntityWithSpec(specProduct);
                 var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name,
-                 productItem.PictureUrl);
+                 productItem.Photos.FirstOrDefault(x => x.IsMain)?.PictureUrl);
                 var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
                 items.Add(orderItem);
 
@@ -42,9 +43,9 @@ namespace Infrastructure.Service
 
             //calc subtotal
             var subtotal = items.Sum(item => item.Price * item.Quantity);
-            
+
             //check to see if order exists
-            var spec = new OrderByPaymentIntentIdWithItemsSpectification(basket.PaymentIntentId);
+            var spec = new OrderByPaymentIntentIdWithItemsSpecification(basket.PaymentIntentId);
             var existingOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
             if (existingOrder != null)
             {
@@ -57,7 +58,7 @@ namespace Infrastructure.Service
             //save to db
             var result = await _unitOfWork.Complete();
             if (result <= 0) return null;
-           
+
             //return order
             return order;
         }

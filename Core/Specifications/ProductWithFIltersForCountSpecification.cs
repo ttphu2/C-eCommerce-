@@ -2,7 +2,7 @@ using Core.Entities;
 
 namespace Core.Specifications
 {
-    public class ProductWithFIltersForCountSpecification :BaseSpectification<Product>
+    public class ProductWithFIltersForCountSpecification :BaseSpecification<Product>
     {
         public ProductWithFIltersForCountSpecification(ProductSpecParams productParams)
         :base(x =>  

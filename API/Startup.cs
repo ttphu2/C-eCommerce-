@@ -1,3 +1,4 @@
+using System.IO;
 using API.Extensions;
 using API.Helpers;
 using API.Middleware;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
 
 namespace API
@@ -81,9 +83,16 @@ namespace API
 
             //kích hoạt sử dụng file tĩnh trên server
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Content")
+                ),
+                RequestPath = "/content"
+            });
             //kích hoạt CORS
             app.UseCors("CorsPolicy");
-           
+
 
             app.UseAuthentication(); // Phục hồi thông tin đăng nhập (xác thực)
             app.UseAuthorization();// Phục hồi thông tinn về quyền của User
@@ -93,6 +102,9 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                //đường dẫn URL của yêu cầu không chứa tên tệp và không có endpoint nào khác khớp.
+                //gay anh huong den SPA or bi dua den trang 404 khi file ko ton tai
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

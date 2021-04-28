@@ -10,7 +10,7 @@ namespace Infrastructure.Identity
     // -s|--startup-project <PROJECT> The startup project to use. Defaults to the current working directory.
     // -p|--project <PROJECT>  The project to use. Defaults to the current working directory.
 
-    public class AppIdentityDbContext : IdentityDbContext<AppUser>
+    public class AppIdentityDbContext : IdentityDbContext<AppUser, AppRole, string>
     {
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
         {

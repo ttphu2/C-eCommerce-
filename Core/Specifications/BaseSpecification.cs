@@ -4,14 +4,14 @@ using System.Linq.Expressions;
 
 namespace Core.Specifications
 {
-    public class BaseSpectification<T> : ISpecification<T>
+    public class BaseSpecification<T> : ISpecification<T>
     {
         //Lưu giữ thông tin chỉ định cho query
-        public BaseSpectification()
+        public BaseSpecification()
         {
         }
 
-        public BaseSpectification(Expression<Func<T, bool>> criteria)
+        public BaseSpecification(Expression<Func<T, bool>> criteria)
         {
             Criteria = criteria;
 
