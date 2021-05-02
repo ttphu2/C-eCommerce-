@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { IProduct } from '../shared/models/product';
-import { ShopParams } from '../shared/models/shopParams';
+import { IProduct, IWarehouse } from '../shared/models/product';
+import { ShopParams, WarehouseParams } from '../shared/models/shopParams';
 import { ShopService } from '../shop/shop.service';
 import { AdminService } from './admin.service';
 
@@ -11,14 +11,19 @@ import { AdminService } from './admin.service';
 })
 export class AdminComponent implements OnInit {
   products: IProduct[];
+  warehouse: IWarehouse[];
   totalCount: number;
   shopParams: ShopParams;
+  warehouseParams: WarehouseParams;
+  totalWarehouse: number;
   constructor(private shopService: ShopService, private adminService: AdminService) {
     this.shopParams = this.shopService.getShopParams();
+    this.warehouseParams = this.shopService.getWarehouseParams();
    }
 
   ngOnInit(): void {
     this.getProducts();
+    this.getWarehouse();
   }
   getProducts(useCache = false) {
     this.shopService.getProducts(useCache).subscribe(response => {
@@ -27,6 +32,22 @@ export class AdminComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+  getWarehouse(useCache = false) {
+    this.shopService.getWarehouse(useCache).subscribe(response => {
+      this.warehouse = response.data;
+      this.totalWarehouse = response.count;
+    }, error => {
+      console.log(error);
+    });
+  }
+  onPageChangedWarehouse(event: any) {
+    const params = this.shopService.getWarehouseParams();
+    if (params.pageNumber !== event) {
+      params.pageNumber = event;
+      this.shopService.setWarehouseParams(params);
+      this.getWarehouse(true);
+    }
   }
 
   onPageChanged(event: any) {

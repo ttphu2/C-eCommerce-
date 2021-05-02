@@ -1,3 +1,4 @@
+using System.Linq;
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
@@ -34,7 +35,15 @@ namespace API.Helpers
             CreateMap<Photo, PhotoToReturnDto>()
                 .ForMember(d => d.PictureUrl, 
                     o => o.MapFrom<PhotoUrlResolver>());
-            CreateMap<ProductSize, ProductSizeToReturnDto>();
+            CreateMap<ProductSize, ProductSizeToReturnDto>()
+            .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name));
+            CreateMap<ProductSize, WarehouseToReturnDto>()
+            .ForMember(d => d.Name, o => o.MapFrom(s => s.Product.Name))
+            .ForMember(d => d.Description, o => o.MapFrom(s => s.Product.Description))
+            .ForMember(d => d.Price, o => o.MapFrom(s => s.Product.Price))
+            .ForMember(d => d.ProductId, o => o.MapFrom(s => s.Product.Id))
+           // .ForMember(d => d.PictureUrl, o => o.MapFrom(s => s.Product.Photos.FirstOrDefault(x => x.IsMain).PictureUrl))
+            .ForMember(d => d.PictureUrl, o => o.MapFrom<WarehouseUrlResolver>());
         
 
             

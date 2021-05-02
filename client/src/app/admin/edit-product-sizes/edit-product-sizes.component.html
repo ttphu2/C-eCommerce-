@@ -1,0 +1,134 @@
+<div class="container">
+  <div class="row">
+    <div class="col-6">
+      <form
+        class="mt-4"
+        #productForm="ngForm"
+        (ngSubmit)="onSubmit(productForm.valid && productForm.value)"
+
+      >
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <label for="name">Product Quantity</label>
+            <input
+              [ngClass]="{
+                'is-invalid': quantity.invalid && (quantity.dirty || quantity.touched)
+              }"
+              required
+              type="text"
+              class="form-control"
+              id="quantity"
+              placeholder="Quantity"
+              name="quantity"
+              #quantity="ngModel"
+              [(ngModel)]="+productSize.quantity"
+            />
+            <div
+              *ngIf="quantity.invalid && (quantity.dirty || quantity.touched)"
+              class="invalid-feedback"
+            >
+              <div *ngIf="quantity.errors?.required">Product quantity is required</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <label for="size">Size</label>
+            <select
+              id="size"
+              class="form-control"
+              name="size"
+              [(ngModel)]="productSize.size"
+              required
+            >
+              <option
+                *ngFor="let size of optionSize"
+                [selected]="productSize.size === size"
+                [ngValue]="size"
+              >
+                {{ size }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <label for="productId">Product</label>
+            <select
+              id="productId"
+              class="form-control"
+              name="productId"
+              [(ngModel)]="productSize.productId"
+              required
+            >
+              <option
+                *ngFor="let product of products"
+                [selected]="product.id === productSize.productId"
+                [ngValue]="product.id"
+              >
+                {{ product.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <button
+          [disabled]="!productForm.valid"
+          type="submit"
+          class="btn btn-primary my-3 r"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+    <div class="col-6">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">
+                <div class="p-2">Id</div>
+              </th>
+              <th scope="col">
+                <div class="p-2 text-uppercase">Product</div>
+              </th>
+              <th scope="col">
+                <div class="py-2 text-uppercase">Name</div>
+              </th>
+              <th scope="col">
+                <div class="p-2 px-3 text-uppercase">Size</div>
+              </th>
+              <th scope="col">
+                <div class="p-2 px-3 text-uppercase">Quantity</div>
+              </th>
+            </tr>
+          </thead>
+          <!-- <tbody>
+            <tr *ngFor="let item of product.productSizes">
+              <td class="align-middle">{{ item.id }}</td>
+              <td>
+                <div class="p-2">
+                  <img
+                    src="{{
+                      product.pictureUrl || '/assets/images/placeholder.png'
+                    }}"
+                    alt="{{ product.name }}"
+                    class="img-fluid"
+                    style="max-height: 50px"
+                  />
+                </div>
+              </td>
+              <th class="align-middle">
+                <h5>{{ product.name }}</h5>
+              </th>
+              <td class="align-middle text-center">{{ item.size }}</td>
+              <td class="align-middle text-center">{{ item.quantity }}</td>
+            </tr>
+          </tbody> -->
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

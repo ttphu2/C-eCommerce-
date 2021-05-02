@@ -19,6 +19,22 @@ export interface IProductSize {
   id: number;
   quantity: number;
   size: number;
+
+}
+export interface IProductSizeToCreate {
+  quantity: number;
+  size: number;
+  productId: number;
+
+}
+export interface IWarehouse {
+  id: number;
+  quantity: number;
+  size: number;
+  name: string;
+  description: string;
+  price: number;
+  pictureUrl: string;
 }
 export interface IProductToCreate {
   name: string;
@@ -37,6 +53,15 @@ export class ProductFormValues implements IProductToCreate {
   productTypeId: number;
 
   constructor(init?: ProductFormValues) {
+    Object.assign(this, init);
+  }
+}
+export class ProductSizeFormValues implements IProductSizeToCreate {
+
+  quantity: 0;
+  size: 0;
+  productId: number;
+  constructor(init?: ProductSizeFormValues) {
     Object.assign(this, init);
   }
 }

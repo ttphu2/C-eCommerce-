@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AdminService} from '../admin.service';
 import {ShopService} from '../../shop/shop.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {IProduct, ProductFormValues} from '../../shared/models/product';
+import {IProduct, ProductFormValues, ProductSizeFormValues} from '../../shared/models/product';
 import {IBrand} from '../../shared/models/brand';
 import {IType} from '../../shared/models/productType';
 import {forkJoin} from 'rxjs';

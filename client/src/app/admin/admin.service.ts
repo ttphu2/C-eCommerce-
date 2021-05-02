@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IProduct, ProductFormValues } from '../shared/models/product';
+import { IProduct, IProductSize, ProductFormValues, ProductSizeFormValues } from '../shared/models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +11,16 @@ export class AdminService {
   baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
+
   createProduct(product: ProductFormValues) {
     return this.http.post<IProduct>(this.baseUrl + 'products', product);
   }
 
   updateProduct(product: ProductFormValues, id: number) {
     return this.http.put<IProduct>(this.baseUrl + 'products/' + id, product);
+  }
+  addOrUpdateProductSize(product: ProductSizeFormValues, id: number) {
+    return this.http.put<IProduct>(this.baseUrl + 'products/' + id + '/size', product);
   }
 
   deleteProduct(id: number) {
@@ -29,6 +34,13 @@ export class AdminService {
       observe: 'events'
     });
   }
+  getAllProducts(){
+    return this.http.get<{data: IProduct[]}>(this.baseUrl + 'products?pageSize=50').pipe(
+      map(response => {
+        return response.data ;
+      })
+      );
+  }
 
   deleteProductPhoto(photoId: number, productId: number) {
     return this.http.delete(this.baseUrl + 'products/' + productId + '/photo/' + photoId);
@@ -36,5 +48,8 @@ export class AdminService {
 
   setMainPhoto(photoId: number, productId: number) {
     return this.http.post<IProduct>(this.baseUrl + 'products/' + productId + '/photo/' + photoId, {});
+  }
+  createProductSize(product: ProductSizeFormValues) {
+    return this.http.post<IProductSize>(this.baseUrl + 'warehouse', product);
   }
 }

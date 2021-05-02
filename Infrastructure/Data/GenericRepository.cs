@@ -21,6 +21,7 @@ namespace Infrastructure.Data
             _context.Set<T>().Add(entity);
         }
 
+
         public async Task<int> CountAsync(ISpecification<T> spec)
         {
             return await ApplySpectification(spec).CountAsync();

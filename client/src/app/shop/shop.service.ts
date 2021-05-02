@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IBrand } from '../shared/models/brand';
-import { IPagination, Pagination } from '../shared/models/pagination';
+import { IPagination, IPaginationWarehouse, Pagination, PaginationWarehouse } from '../shared/models/pagination';
 import { IType } from '../shared/models/productType';
 import { delay, map } from 'rxjs/operators';
-import { ShopParams } from '../shared/models/shopParams';
-import { IProduct } from '../shared/models/product';
+import { ShopParams, WarehouseParams } from '../shared/models/shopParams';
+import { IProduct, IProductSize, IWarehouse } from '../shared/models/product';
 import { of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 @Injectable({
@@ -16,10 +16,13 @@ import { environment } from 'src/environments/environment';
 export class ShopService {
   baseUrl = environment.apiUrl;
   products: IProduct[] = [];
+  warehouse: IWarehouse[] = [];
   brands: IBrand[] = [];
   types: IType[] = [];
   pagination = new Pagination();
+  paginationWarehouse = new PaginationWarehouse();
   shopParams = new ShopParams();
+  warehouseParams = new WarehouseParams();
 
   constructor(private http: HttpClient) { }
 
@@ -59,10 +62,47 @@ export class ShopService {
         return this.pagination;
       })
     );
-
-
-
   }
+
+  getWarehouse(useCache: boolean) {
+    if (useCache === false){
+      this.warehouse = [];
+    }
+    if (this.warehouse?.length > 0 && useCache === true) {
+      const pageReceived = Math.ceil(this.warehouse?.length / this.warehouseParams.pageSize);
+      if (this.warehouseParams.pageNumber <= pageReceived) {
+        this.paginationWarehouse.data =
+        this.warehouse.slice(( this.warehouseParams.pageNumber - 1) * this.warehouseParams.pageSize
+        , this.warehouseParams.pageNumber * this.warehouseParams.pageSize);
+        return of(this.paginationWarehouse);
+
+      }
+    }
+    let params = new HttpParams();
+    if (this.warehouseParams.search){
+      params = params.append('search', this.warehouseParams.search);
+    }
+    params = params.append('sort', this.warehouseParams.sort);
+    params = params.append('pageIndex', this.warehouseParams.pageNumber.toString());
+    params = params.append('pageSize', this.warehouseParams.pageSize.toString());
+    return this.http.get<IPaginationWarehouse>(this.baseUrl + 'warehouse', {observe: 'response', params})
+    .pipe(
+      map(response => {
+        this.warehouse = [...this.warehouse!, ...response.body?.data! ];
+        this.paginationWarehouse = response.body as PaginationWarehouse;
+        return this.paginationWarehouse;
+      })
+    );
+  }
+
+  setWarehouseParams(params: ShopParams) {
+    this.warehouseParams = params;
+  }
+
+  getWarehouseParams() {
+    return this.warehouseParams;
+  }
+
   setShopParams(params: ShopParams) {
     this.shopParams = params;
   }
@@ -77,6 +117,14 @@ export class ShopService {
       return of(product);
     }
     return this.http.get<IProduct>(this.baseUrl + 'products/' + id);
+  }
+  getSizeOfProduct(id: number){
+    const itemWithSize = this.warehouse?.find(p => p.id === id);
+    if (itemWithSize)
+    {
+      return of(itemWithSize);
+    }
+    return this.http.get<IProductSize>(this.baseUrl + 'warehouse/' + id);
   }
   getBrands(){
     if (this.brands.length > 0)

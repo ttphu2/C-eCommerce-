@@ -1,4 +1,4 @@
-import { IProduct } from "./product";
+import { IProduct, IWarehouse } from "./product";
 
 export interface IPagination {
   pageIndex: number;
@@ -11,5 +11,18 @@ export class Pagination implements IPagination{
   pageSize: number;
   count: number;
   data: IProduct[] = [];
+}
+
+export interface IPaginationWarehouse {
+  pageIndex: number;
+  pageSize: number;
+  count: number;
+  data: IWarehouse[];
+}
+export class PaginationWarehouse implements IPaginationWarehouse{
+  pageIndex: number;
+  pageSize: number;
+  count: number;
+  data: IWarehouse[] = [];
 }
 

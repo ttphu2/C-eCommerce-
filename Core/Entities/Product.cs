@@ -32,6 +32,19 @@ namespace Core.Entities
 
             _productSizes.Add(productSize);
         }
+        public void AddOrUpdateProductSize(int size, int quantity = 1)
+        {
+            var productSize = _productSizes.Find(x => x.Size == size);
+            if (productSize != null)
+            {
+                productSize.Quantity = quantity;
+            }
+            else
+            {
+                AddProductSize(size, quantity);
+            }
+        }
+
         public void RemoveProductSize(int id)
         {
             var productSize = _productSizes.Find(x => x.Id == id);
