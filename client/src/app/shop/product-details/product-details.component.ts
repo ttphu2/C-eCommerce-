@@ -6,6 +6,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShopService } from '../shop.service';
 import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryImageSize, NgxGalleryOptions} from '@kolkov/ngx-gallery';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
@@ -20,7 +21,7 @@ export class ProductDetailsComponent implements OnInit {
   galleryImages: NgxGalleryImage[];
 
   constructor(private shopService: ShopService, private activeRoute: ActivatedRoute, private bcService: BreadcrumbService,
-              private basketService: BasketService, private formBuilder: FormBuilder) {
+              private basketService: BasketService, private formBuilder: FormBuilder, private toastr: ToastrService) {
     this.bcService.set('@productDetails', ' ');
   }
 
@@ -58,7 +59,31 @@ export class ProductDetailsComponent implements OnInit {
     return imageUrls;
   }
   addItemToBasket() {
-
+    const checkStock = this.product.productSizes.find(x => x.size == this.size );
+    if (this.size === 0){
+      this.toastr.error('Please choose size', 'Size Error', {
+        timeOut: 2000,
+        positionClass: 'toast-bottom-center'
+      });
+      return;
+    }
+    if (this.quantity > checkStock!.quantity )
+    {
+      this.toastr.error('The quantity of this product is '+checkStock!.quantity, 'Quantity Error', {
+        timeOut: 2000,
+        positionClass: 'toast-bottom-center'
+      });
+      return;
+    }
+    if (!this.basketService.checkStockProductInBasket(this.product, this.quantity, this.size, checkStock!.quantity ))
+    {
+      this.toastr.error('The quantity of this product is '+checkStock!.quantity, 'Quantity Error', {
+        timeOut: 2000,
+        positionClass: 'toast-bottom-center'
+      });
+      return;
+    }
+   // this.product.productSizes.find(x => x.size == this.size )!.quantity = checkStock!.quantity - this.quantity;
     this.basketService.addItemToBasket(this.product, this.quantity, +this.size);
   }
   incrementQuantity() {
@@ -66,8 +91,6 @@ export class ProductDetailsComponent implements OnInit {
   }
   onButtonGroupClick($event: any) {
     console.log($event);
-
-
   }
   decrementQuantity() {
     if (this.quantity > 1){

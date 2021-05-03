@@ -5,7 +5,7 @@ import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAddress } from '../shared/models/address';
-import { IUser } from '../shared/models/user';
+import { ChangePasswordFormValues, IUser, IUserProfile, UserProfileFormValues } from '../shared/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -87,6 +87,12 @@ export class AccountService {
 
   updateUserAddress(address: IAddress) {
     return  this.http.put<IAddress>(this.baseUrl + 'account/address', address);
+  }
+  updateUser(form: UserProfileFormValues) {
+    return  this.http.put<IUserProfile>(this.baseUrl + 'account/', form);
+  }
+  changePassword(form: ChangePasswordFormValues) {
+    return  this.http.put(this.baseUrl + 'account/changepassword', form);
   }
 
 }

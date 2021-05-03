@@ -5,11 +5,12 @@ import { RegisterComponent } from './register/register.component';
 import { AccountRoutingModule } from './account-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, EditProfileComponent],
+  declarations: [LoginComponent, RegisterComponent, EditProfileComponent, ChangePasswordComponent],
   imports: [
     CommonModule,
     AccountRoutingModule,

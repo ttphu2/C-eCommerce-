@@ -38,8 +38,14 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = await _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName
+                DisplayName = user.DisplayName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Birthday = user.Birthday,
+                Gender = user.Gender,
+                Phone = user.Phone,
+                Token = await _tokenService.CreateToken(user)
+
             };
         }
         [HttpGet("emailexists")]
@@ -54,6 +60,61 @@ namespace API.Controllers
             var user = await _userManager.FindByUserByClaimsPricipleEmailWithAddressAsync(HttpContext.User);
             return _mapper.Map<Address, AddressDto>(user.Address);
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<UserDto>> CreateUser(UserToCreateDto userToCreate)
+        {
+            if (CheckEmailExistsAsync(userToCreate.Email).Result.Value)
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse
+                {
+                    Errors = new[]
+                {"Email address is in use"}
+                });
+            }
+            var user = new AppUser
+            {
+                DisplayName = userToCreate.DisplayName,
+                FirstName = userToCreate.FirstName,
+                LastName = userToCreate.LastName,
+                Birthday = userToCreate.Birthday,
+                Gender = userToCreate.Gender,
+                Phone = userToCreate.Phone,
+                Email = userToCreate.Email,
+                UserName = userToCreate.Email,
+            };
+            var result = await _userManager.CreateAsync(user, userToCreate.Password);
+            if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+            return new UserDto
+            {
+
+                DisplayName = user.DisplayName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Birthday = user.Birthday,
+                Gender = user.Gender,
+                Phone = user.Phone,
+                Token = await _tokenService.CreateToken(user),
+                Email = user.Email
+            };
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+                return Ok();
+
+            }
+            return BadRequest(new ApiResponse(400));
+
+        }
+
         [Authorize]
         [HttpPut("address")]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
@@ -64,6 +125,23 @@ namespace API.Controllers
             if (result.Succeeded) return Ok(_mapper.Map<Address, AddressDto>(user.Address));
             return BadRequest("Problem updating the user");
         }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<ActionResult<UserToUpdateDto>> UpdateInfoUser(UserToUpdateDto userUpdate)
+        {
+            var user = await _userManager.FindByEmailFromClaimsPriciple(HttpContext.User);
+            user.Birthday = userUpdate.Birthday;
+            user.FirstName = userUpdate.FirstName;
+            user.DisplayName = userUpdate.DisplayName;
+            user.LastName = userUpdate.LastName;
+            user.Phone = userUpdate.Phone;
+            user.Gender = userUpdate.Gender;
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded) return Ok(_mapper.Map<AppUser, UserToUpdateDto>(user));
+            return BadRequest("Problem updating the user");
+        }
+
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
@@ -75,8 +153,13 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = await _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName
+                DisplayName = user.DisplayName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Birthday = user.Birthday,
+                Gender = user.Gender,
+                Phone = user.Phone,
+                Token = await _tokenService.CreateToken(user)
             };
         }
         [HttpPost("register")]
@@ -105,6 +188,29 @@ namespace API.Controllers
                 Email = user.Email
             };
         }
+        [Authorize]
+        [HttpPut("changepassword")]
+
+        public async Task<ActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var user = await _userManager.FindByEmailFromClaimsPriciple(HttpContext.User);
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, changePasswordDto.Password);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+            return Ok();
+        }
+
+        // [Authorize(Roles = "Admin")]
+        // [HttpPut("role/{id}")]
+        // public async Task<ActionResult> AddRoleToUser(int id,ChangePasswordDto changePasswordDto)
+        // {
+        //     var user = await _userManager.FindByEmailFromClaimsPriciple(HttpContext.User);
+        //     user.PasswordHash = _userManager.PasswordHasher.HashPassword(user,changePasswordDto.Password);
+
+        //     var result = await _userManager.UpdateAsync(user);
+        //     if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+        //     return Ok();
+        // }
 
 
     }

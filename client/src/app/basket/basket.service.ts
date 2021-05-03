@@ -65,6 +65,23 @@ export class BasketService {
   getCurrentBasketValue(){
     return this.basketSource.value;
   }
+  checkStockProductInBasket(item: IProduct, quantity = 1, size: number, maxStock: number): boolean
+  {
+    const basket = this.getCurrentBasketValue();
+    if (basket)
+    {
+      var temp = basket.items.find(x => x.id == item.id && x.size == size);
+      if (temp)
+      {
+        if (quantity + temp.quantity > maxStock)
+        {
+          return false;
+        }
+      }
+      return true;
+    }
+    return true;
+  }
   addItemToBasket(item: IProduct, quantity = 1, size: number){
     const itemToAdd: IBasketItem = this.mapProductItemToBasketItem(item, quantity, size); // map data
 

@@ -20,13 +20,34 @@
     <a class="p-2" routerLink="/test-error" routerLinkActive="active"
       >Contact</a
     >
-    <a
+    <!-- <a
       *ngIf="isAdmin$ | async"
       class="p-2"
       routerLink="/admin"
       routerLinkActive="active"
       >Admin</a
-    >
+    > -->
+    <span class="dropdown" dropdown  *ngIf="isAdmin$ | async">
+      <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle
+        >ADMIN
+      </a>
+      <div
+        class="dropdown-menu"
+        style="cursor: pointer"
+        *dropdownMenu
+      >
+      <a
+      class="dropdown-item d-flex align-items-center py-2"
+      routerLink="/admin"
+      routerLinkActive="active"
+      >Product Manager</a>
+      <a
+      class="dropdown-item d-flex align-items-center py-2"
+      routerLink="/admin"
+      routerLinkActive="active"
+      >User Manager</a>
+      </div>
+    </span>
   </nav>
   <div class="d-flex align-items-center">
     <a routerLink="/basket" class="position-relative">

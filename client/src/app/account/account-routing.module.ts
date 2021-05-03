@@ -4,12 +4,14 @@ import { LoginComponent } from './login/login.component';
 import { RouterModule, Routes } from '@angular/router';
 import { RegisterComponent } from './register/register.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 
 const routes: Routes  = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
-  {path: 'edit', component: EditProfileComponent, data: {breadcrumb: 'Edit Profile'}}
+  {path: 'edit', component: EditProfileComponent, data: {breadcrumb: 'Edit Profile'}},
+  {path: 'changepassword', component: ChangePasswordComponent, data: {breadcrumb: 'Change Password'}}
 ];
 @NgModule({
   declarations: [],

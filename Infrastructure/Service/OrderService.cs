@@ -34,7 +34,22 @@ namespace Infrastructure.Service
                 var productItem = await _unitOfWork.Repository<Product>().GetEntityWithSpec(specProduct);
                 var itemOrdered = new ProductItemOrdered(productItem.Id, item.Size, productItem.Name,
                  productItem.Photos.FirstOrDefault(x => x.IsMain)?.PictureUrl);
-                var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
+                var productSize = productItem.ProductSizes.FirstOrDefault(x => x.Size == item.Size);
+                var orderItem = new OrderItem();
+                if (item.Quantity > productSize.Quantity)
+                {
+                    orderItem = new OrderItem(itemOrdered, productItem.Price, productSize.Quantity);
+                    productSize.Quantity = 0;
+                }
+                else
+                {
+                    orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
+                    productSize.Quantity = productSize.Quantity - item.Quantity;
+
+                }
+                productItem.AddOrUpdateProductSize(productSize.Size, productSize.Quantity);
+                _unitOfWork.Repository<Product>().Update(productItem);
+
                 items.Add(orderItem);
 
             }
