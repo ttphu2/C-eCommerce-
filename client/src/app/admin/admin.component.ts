@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 import { IProduct, IWarehouse } from '../shared/models/product';
 import { ShopParams, WarehouseParams } from '../shared/models/shopParams';
 import { ShopService } from '../shop/shop.service';
@@ -60,10 +61,27 @@ export class AdminComponent implements OnInit {
   }
 
   deleteProduct(id: number) {
-    this.adminService.deleteProduct(id).subscribe((response: any) => {
-      this.products.splice(this.products.findIndex(p => p.id === id), 1);
-      this.totalCount--;
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to really delete ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.adminService.deleteProduct(id).subscribe((response: any) => {
+          this.products.splice(this.products.findIndex(p => p.id === id), 1);
+          this.totalCount--;
+        });
+        Swal.fire(
+          'Deleted!',
+          'User has been deleted.',
+          'success'
+        );
+      }
     });
+
   }
 
 }

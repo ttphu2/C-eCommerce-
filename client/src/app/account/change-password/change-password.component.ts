@@ -1,5 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
+import { NG_VALIDATORS } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { ChangePasswordFormValues, IUser, UserProfileFormValues } from 'src/app/shared/models/user';
@@ -15,7 +16,7 @@ export class ChangePasswordComponent implements OnInit {
   currentUser$: Observable<IUser>;
   user: IUser;
   formChangePassword: ChangePasswordFormValues;
-
+  regEx: string = "(?=^.{6,10}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\\s).*$";
   toggleEdit: boolean = false;
   constructor(private accountService: AccountService, private toastr: ToastrService) {
     this.formChangePassword = new ChangePasswordFormValues();
@@ -44,6 +45,9 @@ export class ChangePasswordComponent implements OnInit {
       console.log(error);
       this.toastr.error("Change password failed");
     });
-}
+  }
+  updatePassword(event: any) {
+    this.formChangePassword.password = event;
+  }
 
 }

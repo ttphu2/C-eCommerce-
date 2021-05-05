@@ -1,4 +1,5 @@
 export class IUser {
+  id: string;
   email: string;
   displayName: string;
   token: string;
@@ -42,3 +43,4 @@ export class UserProfileFormValues implements IUserProfile {
     Object.assign(this, init);
   }
 }
+

@@ -1,15 +1,19 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
 using API.Extensions;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -28,6 +32,39 @@ namespace API.Controllers
             _tokenService = tokenService;
             _userManager = userManager;
             _signInManager = signInManager;
+        }
+        [Authorize]
+        [HttpGet("all")]
+        public async Task<ActionResult<UserDto>> GetListUser([FromQuery] UserSpecParams userParams)
+        {
+            var totalItem = await _userManager.Users.CountAsync();
+            var user = await _userManager.Users
+            .Skip(userParams.PageSize * (userParams.PageIndex - 1))
+            .Take( userParams.PageSize).ToListAsync();
+            var data = _mapper.Map<IReadOnlyList<AppUser>, IReadOnlyList<UserDto>>(user);
+
+            return Ok(new Pagination<UserDto>(userParams.PageIndex, userParams.PageSize, totalItem, data));
+            // return new UserDto
+            // {
+            //     Email = user.Email,
+            //     DisplayName = user.DisplayName,
+            //     FirstName = user.FirstName,
+            //     LastName = user.LastName,
+            //     Birthday = user.Birthday,
+            //     Gender = user.Gender,
+            //     Phone = user.Phone,
+            // };
+        }
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDto>> GetUser(string id)
+        {
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null) return NotFound(new ApiResponse(404));
+
+            return _mapper.Map<AppUser, UserDto>(user);
+        
         }
         [Authorize]
         [HttpGet]
@@ -99,7 +136,22 @@ namespace API.Controllers
                 Email = user.Email
             };
         }
-
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<UserToUpdateDto>> UpdateUser(UserToUpdateDto userUpdate, string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            user.Birthday = userUpdate.Birthday;
+            user.FirstName = userUpdate.FirstName;
+            user.DisplayName = userUpdate.DisplayName;
+            user.LastName = userUpdate.LastName;
+            user.Phone = userUpdate.Phone;
+            user.Gender = userUpdate.Gender;
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded) return Ok(_mapper.Map<AppUser, UserToUpdateDto>(user));
+            return BadRequest("Problem updating the user");
+        }
+        
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteUser(string id)

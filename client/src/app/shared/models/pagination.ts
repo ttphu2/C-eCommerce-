@@ -1,4 +1,5 @@
 import { IProduct, IWarehouse } from "./product";
+import { IUser } from "./user";
 
 export interface IPagination {
   pageIndex: number;
@@ -24,5 +25,17 @@ export class PaginationWarehouse implements IPaginationWarehouse{
   pageSize: number;
   count: number;
   data: IWarehouse[] = [];
+}
+export interface IPaginationUser {
+  pageIndex: number;
+  pageSize: number;
+  count: number;
+  data: IUser[];
+}
+export class PaginationUser implements IPaginationUser{
+  pageIndex: number;
+  pageSize: number;
+  count: number;
+  data: IUser[] = [];
 }
 

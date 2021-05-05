@@ -1,0 +1,200 @@
+<form
+  class="mt-4"
+  #productForm="ngForm"
+  (ngSubmit)="onSubmit(productForm.valid && productForm.value)"
+>
+  <div class="form-row">
+    <div class="form-group col-md-6" *ngIf="!isEdit">
+      <label for="name">Email</label>
+      <input
+        [ngClass]="{
+          'is-invalid': ngemail.invalid && (ngemail.dirty || ngemail.touched)
+        }"
+        required
+        type="text"
+        class="form-control"
+        id="email"
+        placeholder="Email"
+        name="email"
+        #ngemail="ngModel"
+        [ngModel]="this.email"
+        (ngModelChange)="updateEmail($event)"
+      />
+      <div
+        *ngIf="ngemail.invalid && (ngemail.dirty || ngemail.touched)"
+        class="invalid-feedback"
+      >
+        <div *ngIf="ngemail.errors?.required">Email is required</div>
+      </div>
+    </div>
+    <div class="form-group col-md-6" *ngIf="!isEdit">
+      <label for="name">Password</label>
+      <input
+        [ngClass]="{
+          'is-invalid':
+            ngpassword.invalid && (ngpassword.dirty || ngpassword.touched)
+        }"
+        required
+        type="password"
+        class="form-control"
+        id="password"
+        placeholder="password"
+        name="password"
+        #ngpassword="ngModel"
+        [pattern]="regEx"
+        [ngModel]="this.password"
+        (ngModelChange)="updatePassword($event)"
+      />
+      <div
+        *ngIf="ngpassword.invalid && (ngpassword.dirty || ngpassword.touched)"
+        class="invalid-feedback"
+      >
+        <div *ngIf="ngpassword.errors?.required">Password is required</div>
+        <div *ngIf="ngpassword.errors?.pattern">Password is not valid</div>
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="name">Display Name</label>
+      <input
+        [ngClass]="{
+          'is-invalid':
+            displayName.invalid && (displayName.dirty || displayName.touched)
+        }"
+        required
+        type="text"
+        class="form-control"
+        id="displayName"
+        placeholder="Display Name"
+        name="displayName"
+        #displayName="ngModel"
+        [(ngModel)]="user.displayName"
+      />
+      <div
+        *ngIf="
+          displayName.invalid && (displayName.dirty || displayName.touched)
+        "
+        class="invalid-feedback"
+      >
+        <div *ngIf="displayName.errors?.required">Display name is required</div>
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="firstname">First name</label>
+      <input
+        [ngClass]="{
+          'is-invalid':
+            firstname.invalid && (firstname.dirty || firstname.touched)
+        }"
+        required
+        type="text"
+        class="form-control"
+        id="firstname"
+        placeholder="firstname"
+        name="firstname"
+        #firstname="ngModel"
+        [(ngModel)]="user.firstName"
+      />
+      <div
+        *ngIf="firstname.invalid && (firstname.dirty || firstname.touched)"
+        class="invalid-feedback"
+      >
+        <div *ngIf="firstname.errors?.required">First name is required</div>
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="firstname">Last name</label>
+      <input
+        [ngClass]="{
+          'is-invalid': lastname.invalid && (lastname.dirty || lastname.touched)
+        }"
+        required
+        type="text"
+        class="form-control"
+        id="lastname"
+        placeholder="lastname"
+        name="lastname"
+        #lastname="ngModel"
+        [(ngModel)]="user.lastName"
+      />
+      <div
+        *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)"
+        class="invalid-feedback"
+      >
+        <div *ngIf="lastname.errors?.required">Last name is required</div>
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="phone">Phone</label>
+      <input
+        [ngClass]="{
+          'is-invalid': phone.invalid && (phone.dirty || phone.touched)
+        }"
+        required
+        type="text"
+        class="form-control"
+        id="phone"
+        placeholder="phone"
+        name="phone"
+        pattern="(84|0[3|5|7|8|9])+([0-9]{8})\b"
+        #phone="ngModel"
+        [(ngModel)]="user.phone"
+      />
+      <div
+        *ngIf="phone.invalid && (phone.dirty || phone.touched)"
+        class="invalid-feedback"
+      >
+        <div *ngIf="phone.errors?.required">Phone is required</div>
+        <div *ngIf="phone.errors?.pattern">Phone is not valid</div>
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="birthday">Birthday</label>
+      <input
+        [ngClass]="{
+          'is-invalid': birthday.invalid && (birthday.dirty || birthday.touched)
+        }"
+        required
+        type="date"
+        class="form-control"
+        id="birthday"
+        placeholder="birthday"
+        name="birthday"
+        #birthday="ngModel"
+        [ngModel]="user.birthday | date: 'yyyy-MM-dd'"
+        (ngModelChange)="user.birthday = $event"
+      />
+      <div
+        *ngIf="birthday.invalid && (birthday.dirty || birthday.touched)"
+        class="invalid-feedback"
+      >
+        <div *ngIf="birthday.errors?.required">Birthday is required</div>
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="phone">Gender</label>
+      <select
+        id="type"
+        class="form-control"
+        name="gender"
+        [(ngModel)]="user.gender"
+        required
+      >
+        <option
+          *ngFor="let item of optionGender"
+          [selected]="user.gender == item"
+          [ngValue]="item"
+        >
+          {{ item }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <button
+    [disabled]="!productForm.valid"
+    type="submit"
+    class="btn btn-primary my-3 float-right"
+  >
+    Submit
+  </button>
+</form>

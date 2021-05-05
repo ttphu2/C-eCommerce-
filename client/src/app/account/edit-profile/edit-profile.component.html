@@ -55,10 +55,19 @@
       <div class="col-md-4">
         <div class="profile-work">
           <p>WORK LINK</p>
-          <a  routerLink="/account/edit" style="color: blue;"
-          routerLinkActive="active" href="">Profile</a><br />
-          <a routerLink="/account/changepassword"
-          routerLinkActive="active" href="">Change Password</a><br />
+          <a
+            routerLink="/account/edit"
+            style="color: blue"
+            routerLinkActive="active"
+            href=""
+            >Profile</a
+          ><br />
+          <a
+            routerLink="/account/changepassword"
+            routerLinkActive="active"
+            href=""
+            >Change Password</a
+          ><br />
         </div>
       </div>
       <div class="col-md-8">
@@ -191,6 +200,7 @@
                   placeholder="phone"
                   name="phone"
                   #phone="ngModel"
+                  pattern="(84|0[3|5|7|8|9])+([0-9]{8})\b"
                   [(ngModel)]="profileForm.phone"
                 />
                 <div
@@ -198,6 +208,7 @@
                   class="invalid-feedback"
                 >
                   <div *ngIf="phone.errors?.required">Phone is required</div>
+                  <div *ngIf="phone.errors?.pattern">Phone is not valid</div>
                 </div>
               </div>
             </div>

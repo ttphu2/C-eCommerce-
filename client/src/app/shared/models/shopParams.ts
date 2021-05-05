@@ -14,3 +14,9 @@ export class WarehouseParams {
   pageSize = 6;
   search: string;
 }
+export class UserParams {
+  sort = 'name';
+  pageNumber = 1;
+  pageSize = 6;
+  search: string;
+}
