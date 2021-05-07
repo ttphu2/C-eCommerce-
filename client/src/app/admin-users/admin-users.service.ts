@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IPaginationUser, Pagination, PaginationUser } from '../shared/models/pagination';
+import { IRole } from '../shared/models/role';
 import { UserParams } from '../shared/models/shopParams';
 import { IUser, UserProfileFormValues } from '../shared/models/user';
 
@@ -13,6 +14,8 @@ import { IUser, UserProfileFormValues } from '../shared/models/user';
 export class AdminUsersService {
   baseUrl = environment.apiUrl;
   users: IUser[] = [];
+  roles: IRole[] = [];
+  rolesOfUser: IRole[];
   pagination = new PaginationUser();
   userParams = new UserParams();
   constructor(private http: HttpClient) { }
@@ -70,8 +73,34 @@ export class AdminUsersService {
   deleteUser(id: string) {
     return this.http.delete(this.baseUrl + 'account/' + id);
   }
-
+  addRoleToUser(id: string, role: string) {
+    return this.http.put(this.baseUrl + 'account/' + id + '/roles/' + role, null);
+  }
+  deleteRoleOfUser(id: string, name: string) {
+    return this.http.delete(this.baseUrl + 'account/' + id + '/roles/' + name);
+  }
   getUserParams() {
     return this.userParams;
+  }
+  getRoles(){
+    if (this.roles.length > 0)
+    {
+      return of(this.roles);
+    }
+    return this.http.get<IRole[]>(this.baseUrl + 'account/roles').pipe(
+      map(response => {
+        //console.log(response);
+        this.roles = response;
+        return response;
+      })
+    );
+  }
+  getRolesOfUser(id: string){
+    return this.http.get<IRole[]>(this.baseUrl + 'account/' + id + '/roles').pipe(
+      map(response => {
+        this.rolesOfUser = response;
+        return response;
+      })
+    );
   }
 }

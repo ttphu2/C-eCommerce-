@@ -11,8 +11,11 @@
                 ></app-edit-user-form>
               </div>
             </tab>
-            <tab heading="Edit Roles">
-
+            <tab heading="Edit Roles" *ngIf="isEdit">
+              <app-edit-user-roles
+                [rolesOfUser]="rolesOfUser"
+                [roles]="roles"
+              ></app-edit-user-roles>
             </tab>
           </tabset>
         </div>

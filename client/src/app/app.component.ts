@@ -21,11 +21,14 @@ export class AppComponent implements OnInit {
   loadCurrentUser() {
     const token = localStorage.getItem('token') || null as any;
     // tslint:disable-next-line: deprecation
-    this.accountService.loadCurrentUser(token).subscribe(() => {
-      console.log('loaded user');
-    }, error => {
-      console.log(error);
-    });
+    if (token){
+      this.accountService.loadCurrentUser(token).subscribe(() => {
+        console.log('loaded user');
+      }, error => {
+        console.log(error);
+      });
+    }
+
 
   }
   loadBasket() {

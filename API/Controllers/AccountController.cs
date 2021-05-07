@@ -23,11 +23,12 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly RoleManager<AppRole> _roleManager;
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager
 
-
-        , ITokenService tokenService, IMapper mapper)
+        , ITokenService tokenService, IMapper mapper, RoleManager<AppRole> roleManager)
         {
+            _roleManager = roleManager;
             _mapper = mapper;
             _tokenService = tokenService;
             _userManager = userManager;
@@ -40,7 +41,7 @@ namespace API.Controllers
             var totalItem = await _userManager.Users.CountAsync();
             var user = await _userManager.Users
             .Skip(userParams.PageSize * (userParams.PageIndex - 1))
-            .Take( userParams.PageSize).ToListAsync();
+            .Take(userParams.PageSize).ToListAsync();
             var data = _mapper.Map<IReadOnlyList<AppUser>, IReadOnlyList<UserDto>>(user);
 
             return Ok(new Pagination<UserDto>(userParams.PageIndex, userParams.PageSize, totalItem, data));
@@ -64,7 +65,7 @@ namespace API.Controllers
             if (user == null) return NotFound(new ApiResponse(404));
 
             return _mapper.Map<AppUser, UserDto>(user);
-        
+
         }
         [Authorize]
         [HttpGet]
@@ -151,7 +152,7 @@ namespace API.Controllers
             if (result.Succeeded) return Ok(_mapper.Map<AppUser, UserToUpdateDto>(user));
             return BadRequest("Problem updating the user");
         }
-        
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteUser(string id)
@@ -250,6 +251,61 @@ namespace API.Controllers
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
             return Ok();
+        }
+        [Authorize]
+        [HttpGet("{id}/roles")]
+        public async Task<ActionResult<IList<string>>> GetUserAndRoles(string id)
+        {
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null) return NotFound(new ApiResponse(404));
+            var userRoles = await _userManager.GetRolesAsync(user);
+            
+            var roleIds = _roleManager.Roles.Where(r => userRoles.AsEnumerable().Contains(r.Name)).ToList();
+            if (userRoles == null) return NotFound(new ApiResponse(404));
+
+            return Ok(roleIds);
+
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}/roles/{role}")]
+        public async Task<ActionResult> AddRolesToUser(string id, string role)
+        {
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null) return NotFound(new ApiResponse(404));
+
+            var check = await _userManager.IsInRoleAsync(user, role);
+            if (!check)
+            {
+                var result = await _userManager.AddToRoleAsync(user, role);
+                if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+            }
+            return Ok(await _roleManager.FindByNameAsync(role));
+
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}/roles/{role}")]
+        public async Task<ActionResult> DeleteRoleToUser(string id, string role)
+        {
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null) return NotFound(new ApiResponse(404));
+
+            var check = await _userManager.IsInRoleAsync(user, role);
+            if (check)
+            {
+                var result = await _userManager.RemoveFromRoleAsync(user, role);
+                if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+            }
+            return Ok();
+
+        }
+        [Cached(600)]
+        [HttpGet("roles")]
+        public async Task<ActionResult<IReadOnlyList<string>>> GetRoles()
+        {
+            return Ok(await _roleManager.Roles.ToListAsync());
         }
 
         // [Authorize(Roles = "Admin")]

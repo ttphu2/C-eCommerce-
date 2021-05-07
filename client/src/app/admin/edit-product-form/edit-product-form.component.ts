@@ -19,9 +19,11 @@ export class EditProductFormComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
   updatePrice(event: any) {
     this.product.price = event;
   }
+  
   onSubmit(product: ProductFormValues) {
     if (this.route.snapshot.url[0].path === 'edit') {
       const updatedProduct = {...this.product, ...product, price: +product.price};
