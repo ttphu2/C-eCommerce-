@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { IProduct, IWarehouse } from '../shared/models/product';
 import { ShopParams, WarehouseParams } from '../shared/models/shopParams';
@@ -11,6 +12,7 @@ import { AdminService } from './admin.service';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
+  @ViewChild('search',{static: false}) searchTerm: ElementRef;
   products: IProduct[];
   warehouse: IWarehouse[];
   totalCount: number;
@@ -83,5 +85,19 @@ export class AdminComponent implements OnInit {
     });
 
   }
+  onSearch(){
+    const params = this.shopService.getShopParams();
+    params.search = this.searchTerm.nativeElement.value;
+    params.pageNumber = 1;
+    this.shopService.setShopParams(params);
+    this.getProducts();
+  }
+  onReset(){
+    this.searchTerm.nativeElement.value = '';
+    this.shopParams = new ShopParams();
+    this.shopService.setShopParams(this.shopParams);
+    this.getProducts();
+  }
+  
 
 }

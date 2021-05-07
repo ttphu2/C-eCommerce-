@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import Swal from 'sweetalert2';
 import { AccountService } from '../account/account.service';
 import { UserParams } from '../shared/models/shopParams';
@@ -11,6 +11,7 @@ import { AdminUsersService } from './admin-users.service';
   styleUrls: ['./admin-users.component.scss']
 })
 export class AdminUsersComponent implements OnInit {
+  @ViewChild('search',{static: false}) searchTerm: ElementRef;
   users: IUser[];
   totalCount: number;
   userParams: UserParams;
@@ -60,6 +61,19 @@ export class AdminUsersComponent implements OnInit {
       }
     });
 
+  }
+  onSearch(){
+    const params = this.adminService.getUserParams();
+    params.search = this.searchTerm.nativeElement.value;
+    params.pageNumber = 1;
+    this.adminService.setUserParams(params);
+    this.getUsers();
+  }
+  onReset(){
+    this.searchTerm.nativeElement.value = '';
+    this.userParams = new UserParams();
+    this.adminService.setUserParams(this.userParams);
+    this.getUsers();
   }
 
 }

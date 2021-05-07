@@ -16,8 +16,8 @@ export class EditUserRolesComponent implements OnInit {
   @Input() roles: IRole[];
   roleForm: string;
   isEdit: boolean = this.route.snapshot.url[0].path === 'edit';
-  constructor(private route: ActivatedRoute,private adminService: AdminUsersService,
-              private router: Router,private toastr: ToastrService) { }
+  constructor(private route: ActivatedRoute, private adminService: AdminUsersService,
+              private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
 

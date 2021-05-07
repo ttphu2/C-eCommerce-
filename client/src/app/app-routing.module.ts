@@ -36,6 +36,18 @@ const routes: Routes = [
       .then(mod => mod.AdminUsersModule), data: { breadcrumb: 'Admin Users' }
   },
   {
+    path: 'admin-brand',
+    canActivate: [AuthGuard, AdminGuard],
+    loadChildren: () => import('./admin-brand/admin-brand.module')
+      .then(mod => mod.AdminBrandModule), data: { breadcrumb: 'Admin Brands' }
+  },
+  {
+    path: 'admin-type',
+    canActivate: [AuthGuard, AdminGuard],
+    loadChildren: () => import('./admin-type/admin-type.module')
+      .then(mod => mod.AdminTypeModule), data: { breadcrumb: 'Admin Types' }
+  },
+  {
     path: 'admin',
     canActivate: [AuthGuard, AdminGuard],
     loadChildren: () => import('./admin/admin.module')

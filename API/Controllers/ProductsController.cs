@@ -57,14 +57,14 @@ namespace API.Controllers
             if (product == null) return NotFound(new ApiResponse(404));
             return _mapper.Map<Product, ProductToReturnDto>(product);
         }
-        [Cached(600)]
+        // [Cached(600)]
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
             return Ok(await _unitOfWork.Repository<ProductBrand>().ListAllAsync());
         }
 
-        [Cached(600)]
+        //[Cached(600)]
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
         {
@@ -78,7 +78,7 @@ namespace API.Controllers
             var product = _mapper.Map<ProductCreateDto, Product>(productToCreate);
 
             _unitOfWork.Repository<Product>().Add(product);
-           
+
             var result = await _unitOfWork.Complete();
 
             if (result <= 0) return BadRequest(new ApiResponse(400, "Problem creating product"));
@@ -108,7 +108,6 @@ namespace API.Controllers
         public async Task<ActionResult> DeleteProduct(int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
-
 
             _unitOfWork.Repository<Product>().Delete(product);
 
@@ -153,7 +152,7 @@ namespace API.Controllers
         {
             var spec = new ProductWithTypesAndBrandsSpecification(id);
             var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
-            
+
             var photo = product.Photos.SingleOrDefault(x => x.Id == photoId);
 
             if (photo != null)
@@ -170,11 +169,11 @@ namespace API.Controllers
             }
 
             product.RemovePhoto(photoId);
-            
+
             _unitOfWork.Repository<Product>().Update(product);
-            
+
             var result = await _unitOfWork.Complete();
-            
+
             if (result <= 0) return BadRequest(new ApiResponse(400, "Problem adding photo product"));
 
             return Ok();
@@ -187,13 +186,13 @@ namespace API.Controllers
             var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
 
             if (product.Photos.All(x => x.Id != photoId)) return NotFound();
-            
+
             product.SetMainPhoto(photoId);
-            
+
             _unitOfWork.Repository<Product>().Update(product);
-            
+
             var result = await _unitOfWork.Complete();
-            
+
             if (result <= 0) return BadRequest(new ApiResponse(400, "Problem adding photo product"));
 
             return _mapper.Map<Product, ProductToReturnDto>(product);
@@ -205,22 +204,22 @@ namespace API.Controllers
         {
             var spec = new ProductWithTypesAndBrandsSpecification(id);
             var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
-                if (sizeDto != null)
-                {
-                   // product.AddPhoto(sizeDto.PictureUrl, photo.FileName);
-        
-                    product.AddOrUpdateProductSize(sizeDto.Size,sizeDto.Quantity);
+            if (sizeDto != null)
+            {
+                // product.AddPhoto(sizeDto.PictureUrl, photo.FileName);
 
-                    _unitOfWork.Repository<Product>().Update(product);
+                product.AddOrUpdateProductSize(sizeDto.Size, sizeDto.Quantity);
 
-                    var result = await _unitOfWork.Complete();
+                _unitOfWork.Repository<Product>().Update(product);
 
-                    if (result <= 0) return BadRequest(new ApiResponse(400, "Problem adding size product"));
-                }
-                else
-                {
-                    return BadRequest(new ApiResponse(400, "problem saving photo to disk"));
-                }
+                var result = await _unitOfWork.Complete();
+
+                if (result <= 0) return BadRequest(new ApiResponse(400, "Problem adding size product"));
+            }
+            else
+            {
+                return BadRequest(new ApiResponse(400, "problem saving photo to disk"));
+            }
             return _mapper.Map<Product, ProductToReturnDto>(product);
         }
 

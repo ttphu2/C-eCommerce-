@@ -39,12 +39,13 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetListUser([FromQuery] UserSpecParams userParams)
         {
             var totalItem = await _userManager.Users.CountAsync();
-            var user = await _userManager.Users
+            var user = await _userManager.Users.Where(x => string.IsNullOrEmpty(userParams.Search) || x.Email.ToLower().Contains(userParams.Search))
             .Skip(userParams.PageSize * (userParams.PageIndex - 1))
             .Take(userParams.PageSize).ToListAsync();
+           
             var data = _mapper.Map<IReadOnlyList<AppUser>, IReadOnlyList<UserDto>>(user);
 
-            return Ok(new Pagination<UserDto>(userParams.PageIndex, userParams.PageSize, totalItem, data));
+            return Ok(new Pagination<UserDto>(userParams.PageIndex, userParams.PageSize, user.Count(), data));
             // return new UserDto
             // {
             //     Email = user.Email,
