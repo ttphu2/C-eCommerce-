@@ -8,6 +8,7 @@ const routes: Routes = [
   {path: '', component: AdminComponent},
   {path: 'create', component: EditProductComponent, data: {breadcrumb: 'Create'}},
   {path: 'edit/:id', component: EditProductComponent, data: {breadcrumb: 'Edit'}},
+  {path: 'create_size', component: EditProductSizesComponent, data: {breadcrumb: 'Create Size'}},
   {path: 'edit_size/:id', component: EditProductSizesComponent, data: {breadcrumb: 'Edit Size'}}
 ];
 

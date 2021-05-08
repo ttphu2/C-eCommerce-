@@ -1,1 +1,69 @@
-<p>admin-type works!</p>
+<section class="admin-page" *ngIf="types">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+
+          <div class="col-auto ">
+            <div class="d-flex justify-content-between my-3">
+
+              <header class="h2">Type List</header>
+              <button
+                [routerLink]="['/admin-type/create']"
+                class="btn btn-outline-success"
+              >
+                Create new type
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table center">
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      <div class="p-2 text-uppercase text-center">Id</div>
+                    </th>
+                    <th scope="col">
+                      <div class="py-2 text-uppercase text-center">Name</div>
+                    </th>
+                    <th scope="col">
+                      <div class="p-2  text-uppercase text-center">Edit</div>
+                    </th>
+                    <th scope="col">
+                      <div class="p-2  text-uppercase text-center">Delete</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of types">
+                    <th class="align-middle text-center">
+                      <h5>{{ item.id }}</h5>
+                    </th>
+                    <td class="align-middle text-center">
+                      {{ item.name }}
+                    </td>
+                    <td class="align-middle text-center">
+                      <button
+                        [routerLink]="['edit', item.id]"
+                        class="btn btn-warning"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                    <td class="align-middle text-center">
+                      <button
+                      (click)="deleteType(item.id)"
+                      class="btn btn-danger"
+                      >Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+
+
+          </div>
+
+      </div>
+    </div>
+  </div>
+</section>

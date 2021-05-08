@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8">
+      <form
+        class="mt-4"
+        #productForm="ngForm"
+        (ngSubmit)="onSubmit(productForm.valid && productForm.value)"
+      >
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="name">Name type</label>
+            <input
+              [ngClass]="{
+                'is-invalid':
+                ngname.invalid && (ngname.dirty || ngname.touched)
+              }"
+              required
+              type="text"
+              class="form-control"
+              id="name"
+              placeholder="Name"
+              name="name"
+              #ngname="ngModel"
+              [(ngModel)]="typeForm.name"
+            />
+            <div
+              *ngIf="
+              ngname.invalid && (ngname.dirty || ngname.touched)
+              "
+              class="invalid-feedback"
+            >
+              <div *ngIf="ngname.errors?.required">Name type is required</div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          [disabled]="!productForm.valid"
+          type="submit"
+          class="btn btn-primary my-3"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

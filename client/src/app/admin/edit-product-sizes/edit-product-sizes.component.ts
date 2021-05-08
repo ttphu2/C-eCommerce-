@@ -17,11 +17,15 @@ export class EditProductSizesComponent implements OnInit {
   id: number = +(this.route.snapshot.paramMap.get('id') || 0);
   constructor(private route: ActivatedRoute, private adminService: AdminService,
               private router: Router, private toastr: ToastrService,
-              private shopService: ShopService) { }
+              private shopService: ShopService) {
+                this.productSize = new ProductSizeFormValues();
+  }
 
   ngOnInit(): void {
-   this.productSize = new ProductSizeFormValues();
-   this.loadProductSize();
+    if (this.route.snapshot.url[0].path === 'edit') {
+      this.loadProductSize();
+    }
+
    this.getProducts();
   }
   loadProductSize() {
