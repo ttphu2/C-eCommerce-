@@ -8,6 +8,7 @@ using API.Extensions;
 using AutoMapper;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +19,10 @@ namespace API.Controllers
     {
         private readonly IOrderService _orderSevice;
         private readonly IMapper _mapper;
-        public OrdersController(IOrderService orderSevice, IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork;
+        public OrdersController(IOrderService orderSevice, IMapper mapper, IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _orderSevice = orderSevice;
         }
@@ -38,15 +41,26 @@ namespace API.Controllers
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
             var orders = await _orderSevice.GetOrdersForUserAsync(email);
             return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
-        } 
+        }
+        [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetAllOrders( [FromQuery] OrderSpecParams orderParams)
+        {
+            var spec = new OrdersAllWithItemsAndOrderingSpecification(orderParams);
+            var countSpec = new OrderWithFiltersForCountSpecification(orderParams);
+            var totalItem = await _unitOfWork.Repository<Order>().CountAsync(countSpec);
+            var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
+           // var data = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders);
+            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
+        }
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
-            var order = await _orderSevice.GetOrderByIdAsync(id,email);
+            var order = await _orderSevice.GetOrderByIdAsync(id, email);
             if (order == null) return NotFound(new ApiResponse(404));
             return _mapper.Map<Order, OrderToReturnDto>(order);
-        } 
+        }
         [HttpGet("deliveryMethods")]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {

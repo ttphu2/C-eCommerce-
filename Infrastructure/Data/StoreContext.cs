@@ -11,6 +11,8 @@ namespace Infrastructure.Data
 {
     public class StoreContext : DbContext
     {
+        //dotnet ef database drop -p Infrastructure -s API -c StoreContext 
+        //dotnet ef migrations add PhotoEntityAdded -p Infrastructure -s API -c StoreContext -o Data/Migrations
         public StoreContext(DbContextOptions<StoreContext> options) : base(options)
         {
         }

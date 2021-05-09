@@ -3,6 +3,7 @@ export class ShopParams {
   typeId: number = 0;
   sort = 'name';
   pageNumber = 1;
+  pagePrev = 1;
   pageSize = 6;
   search: string;
 }
@@ -10,6 +11,7 @@ export class WarehouseParams {
   brandId: number = 0;
   typeId: number = 0;
   sort = 'name';
+  pagePrev = 1;
   pageNumber = 1;
   pageSize = 6;
   search: string;

@@ -1,24 +1,24 @@
 [
   {
     "Id": 1,
-    "ShortName": "UPS1",
-    "Description": "Fastest delivery time",
+    "ShortName": "Standard",
+    "Description": "Get it within 1-3 days",
+    "DeliveryTime": "1-3 Days",
+    "Price": 5
+  },
+  {
+    "Id": 2,
+    "ShortName": "Fast",
+    "Description": "Get it within 1-2 days",
     "DeliveryTime": "1-2 Days",
     "Price": 10
   },
   {
-    "Id": 2,
-    "ShortName": "UPS2",
-    "Description": "Get it within 5 days",
-    "DeliveryTime": "2-5 Days",
-    "Price": 5
-  },
-  {
     "Id": 3,
-    "ShortName": "UPS3",
-    "Description": "Slower but cheap",
-    "DeliveryTime": "5-10 Days",
-    "Price": 2
+    "ShortName": "Now",
+    "Description": "Get it within 1 days",
+    "DeliveryTime": "1 Days",
+    "Price": 15
   },
   {
     "Id": 4,

@@ -1,18 +1,18 @@
 [
   {
     "Id": 1,
-    "Name": "Boards"
+    "Name": "Running shoes"
   },
   {
     "Id": 2,
-    "Name": "Hats"
+    "Name": "Basket shoes"
   },
   {
     "Id": 3,
-    "Name": "Boots"
+    "Name": "Football shoes"
   },
   {
     "Id": 4,
-    "Name": "Gloves"
+    "Name": "Slide/Sandals"
   }
 ]

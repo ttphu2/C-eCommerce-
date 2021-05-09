@@ -7,12 +7,11 @@
         (ngSubmit)="onSubmit(productForm.valid && productForm.value)"
       >
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-8">
             <label for="name">Name type</label>
             <input
               [ngClass]="{
-                'is-invalid':
-                ngname.invalid && (ngname.dirty || ngname.touched)
+                'is-invalid': ngname.invalid && (ngname.dirty || ngname.touched)
               }"
               required
               type="text"
@@ -24,9 +23,7 @@
               [(ngModel)]="typeForm.name"
             />
             <div
-              *ngIf="
-              ngname.invalid && (ngname.dirty || ngname.touched)
-              "
+              *ngIf="ngname.invalid && (ngname.dirty || ngname.touched)"
               class="invalid-feedback"
             >
               <div *ngIf="ngname.errors?.required">Name type is required</div>
@@ -43,6 +40,5 @@
         </button>
       </form>
     </div>
-
   </div>
 </div>

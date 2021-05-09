@@ -27,11 +27,14 @@ export class ShopService {
   constructor(private http: HttpClient) { }
 
   getProducts(useCache: boolean) {
-    if (useCache === false){
+    if (useCache === false ){
       this.products = [];
     }
     if (this.products?.length > 0 && useCache === true) {
       const pageReceived = Math.ceil(this.products?.length / this.shopParams.pageSize);
+
+      console.log("page recevie" + pageReceived);
+      console.log("page number" + this.shopParams.pageNumber);
       if (this.shopParams.pageNumber <= pageReceived) {
         this.pagination.data =
         this.products.slice(( this.shopParams.pageNumber - 1) * this.shopParams.pageSize

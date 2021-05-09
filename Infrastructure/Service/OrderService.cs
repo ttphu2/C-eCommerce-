@@ -94,5 +94,9 @@ namespace Infrastructure.Service
             var spec = new OrdersWithItemsAndOrderingSpecification(buyerEmail);
             return await _unitOfWork.Repository<Order>().ListAsync(spec);
         }
+        public async Task<IReadOnlyList<Order>> GetAllOrder()
+        {
+            return await _unitOfWork.Repository<Order>().ListAllAsync();
+        }
     }
 }

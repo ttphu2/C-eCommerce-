@@ -29,6 +29,7 @@ export class CheckoutPaymentComponent implements  AfterViewInit, OnDestroy {
   cardNumberValid = false;
   cardExpiryValid = false;
   cardCvcValid = false;
+  isPayment = false;
 
   constructor(private basketService: BasketService, private checkoutService: CheckoutService,
               private toastr: ToastrService, private router: Router) { }
@@ -46,6 +47,7 @@ ngAfterViewInit(): void {
    this.cardCvc = elements.create('cardCvc');
    this.cardCvc.mount(this.cardCvcElement.nativeElement);
    this.cardCvc.addEventListener('change', this.cardHandler);
+ //  this.isPayment = false;
   }
 
   ngOnDestroy(): void {
@@ -77,9 +79,13 @@ ngAfterViewInit(): void {
     console.log(basket);
     try {
     const createdOrder = await this.createOrder(basket);
-    const paymentResult = await this.confirmPaymentWithStripe(basket);
+    var paymentResult;
+    if(this.isPayment) {
+     paymentResult = await this.confirmPaymentWithStripe(basket);
+    }
 
-    if (paymentResult.paymentIntent){
+
+    if (paymentResult?.paymentIntent || !this.isPayment){
 
       this.basketService.deleteBasket(basket);
       const navigationExtras: NavigationExtras = {state: createdOrder};
@@ -116,6 +122,9 @@ ngAfterViewInit(): void {
       deliveryMethodId: +this.checkoutForm?.get('deliveryForm')?.get('deliveryMethod')?.value,
       shipToAddress: this.checkoutForm?.get('addressForm')?.value
     };
+  }
+  togglePayment(){
+    this.isPayment = !this.isPayment;
   }
 
 }
