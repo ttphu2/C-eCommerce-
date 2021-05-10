@@ -7,6 +7,7 @@ using API.Errors;
 using API.Extensions;
 using API.Helpers;
 using AutoMapper;
+using Core.Entities;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Core.Specifications;
@@ -24,15 +25,19 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly RoleManager<AppRole> _roleManager;
+        private readonly IUnitOfWork _unitOfWork;
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager
 
-        , ITokenService tokenService, IMapper mapper, RoleManager<AppRole> roleManager)
+
+        , ITokenService tokenService, IMapper mapper, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _roleManager = roleManager;
             _mapper = mapper;
             _tokenService = tokenService;
             _userManager = userManager;
             _signInManager = signInManager;
+
         }
         [Authorize]
         [HttpGet("all")]
@@ -42,7 +47,7 @@ namespace API.Controllers
             var user = await _userManager.Users.Where(x => string.IsNullOrEmpty(userParams.Search) || x.Email.ToLower().Contains(userParams.Search))
             .Skip(userParams.PageSize * (userParams.PageIndex - 1))
             .Take(userParams.PageSize).ToListAsync();
-           
+
             var data = _mapper.Map<IReadOnlyList<AppUser>, IReadOnlyList<UserDto>>(user);
 
             return Ok(new Pagination<UserDto>(userParams.PageIndex, userParams.PageSize, user.Count(), data));
@@ -261,7 +266,7 @@ namespace API.Controllers
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (user == null) return NotFound(new ApiResponse(404));
             var userRoles = await _userManager.GetRolesAsync(user);
-            
+
             var roleIds = _roleManager.Roles.Where(r => userRoles.AsEnumerable().Contains(r.Name)).ToList();
             if (userRoles == null) return NotFound(new ApiResponse(404));
 
@@ -309,17 +314,54 @@ namespace API.Controllers
             return Ok(await _roleManager.Roles.ToListAsync());
         }
 
-        // [Authorize(Roles = "Admin")]
-        // [HttpPut("role/{id}")]
-        // public async Task<ActionResult> AddRoleToUser(int id,ChangePasswordDto changePasswordDto)
-        // {
-        //     var user = await _userManager.FindByEmailFromClaimsPriciple(HttpContext.User);
-        //     user.PasswordHash = _userManager.PasswordHasher.HashPassword(user,changePasswordDto.Password);
 
-        //     var result = await _userManager.UpdateAsync(user);
-        //     if (!result.Succeeded) return BadRequest(new ApiResponse(400));
-        //     return Ok();
-        // }
+        [Authorize]
+        [HttpGet("wishlist")]
+        public async Task<ActionResult<IReadOnlyList<WishListDto>>> GetWishList()
+        {
+            var user = await _userManager.FindByUserByClaimsPricipleEmailWithAddressAsync(HttpContext.User);
+            var spec = new WishWithProductSpecification(user.Id);
+            var products = await _unitOfWork.Repository<WishList>().ListAsync(spec);
+            return Ok(_mapper.Map<IReadOnlyList<WishList>, IReadOnlyList<WishListDto>>(products));
+        }
+        [Authorize]
+        [HttpPut("wishlist/{id}")]
+        public async Task<ActionResult> AddWishItem(int id)
+        {
+            var user = await _userManager.FindByUserByClaimsPricipleEmailWithAddressAsync(HttpContext.User);
+            var spec = new WishWithProductForCheckExistSpecification(user.Id,id);
+            var products = await _unitOfWork.Repository<WishList>().GetEntityWithSpec(spec);
+            if(products != null) return BadRequest(new ApiResponse(400, "Wish product was existing"));
+            var wish = new WishList()
+            {
+                AppUserId = user.Id,
+                ProductId = id
+            };
+            _unitOfWork.Repository<WishList>().Add(wish);
+
+            var result = await _unitOfWork.Complete();
+
+            if (result <= 0) return BadRequest(new ApiResponse(400, "Problem creating product"));
+
+            return Ok();
+        }
+        [Authorize]
+        [HttpDelete("wishlist/{id}")]
+        public async Task<ActionResult> DeleteWishItem(int id)
+        {
+            var user = await _userManager.FindByUserByClaimsPricipleEmailWithAddressAsync(HttpContext.User);
+            var spec = new WishWithProductForCheckExistSpecification(user.Id,id);
+            var products = await _unitOfWork.Repository<WishList>().GetEntityWithSpec(spec);
+            if(products == null) return BadRequest(new ApiResponse(400, "Wish product was not existing"));
+        
+            _unitOfWork.Repository<WishList>().Delete(products);
+
+            var result = await _unitOfWork.Complete();
+
+            if (result <= 0) return BadRequest(new ApiResponse(400, "Problem delete wish"));
+
+            return Ok();
+        }
 
 
     }

@@ -13,6 +13,7 @@ import { ShopService } from './shop.service';
 export class ShopComponent implements OnInit {
   @ViewChild('search',{static: false}) searchTerm: ElementRef;
   products?: IProduct[];
+  wishList: number[] = [];
   brands: IBrand[];
   types: IType[];
   shopParams: ShopParams;
@@ -32,6 +33,7 @@ export class ShopComponent implements OnInit {
     this.getProducts(true);
     this.getBrands();
     this.getTypes();
+    this.getWishList();
 
   }
   getProducts(useCache = false){
@@ -39,6 +41,14 @@ export class ShopComponent implements OnInit {
       this.products = response!.data;
       this.totalCount = response!.count;
 
+    }, error => {
+      console.log(error);
+    });
+  }
+  getWishList(){
+    this.shopService.getWishList().subscribe(response => {
+      this.wishList = response;
+      console.log(this.wishList);
     }, error => {
       console.log(error);
     });

@@ -14,6 +14,9 @@ namespace Core.Entities
         public int ProductBrandId { get; set; }
         private readonly List<Photo> _photos = new List<Photo>();
         public IReadOnlyList<Photo> Photos => _photos.AsReadOnly();
+         private readonly List<Comment> _comments = new List<Comment>();
+        public IReadOnlyList<Comment> Comments => _comments.AsReadOnly();
+        
         private readonly List<ProductSize> _productSizes = new List<ProductSize>();
         //Nếu bạn sử dụng bất kỳ lệnh nào làm thay đổi giá trị của biến readonly (nằm ngoài constructor), C# compiler sẽ báo lỗi và dừng biên dịch.
         public IReadOnlyList<ProductSize> ProductSizes => _productSizes.AsReadOnly();

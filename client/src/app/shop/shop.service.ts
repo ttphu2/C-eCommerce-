@@ -153,5 +153,21 @@ export class ShopService {
       })
     );
   }
+  getWishList(){
+    return this.http.get<any[]>(this.baseUrl + 'account/wishlist').pipe(
+      map(response  => {
+        let productIds: number[]  = [];
+        response.forEach(item => productIds.push(item.productId));
+        return productIds;
+      })
+    );
+  }
+addToWishlist(productId: number){
+    return this.http.put(this.baseUrl + 'account/wishlist/' + productId, null);
+
+  }
+  removeFromWishlist(productId: number){
+    return this.http.delete(this.baseUrl + 'account/wishlist/' + productId);
+  }
 
 }

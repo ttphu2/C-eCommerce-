@@ -209,7 +209,7 @@ namespace API.Controllers
                 // product.AddPhoto(sizeDto.PictureUrl, photo.FileName);
 
                 product.AddOrUpdateProductSize(sizeDto.Size, sizeDto.Quantity);
-
+                
                 _unitOfWork.Repository<Product>().Update(product);
 
                 var result = await _unitOfWork.Complete();

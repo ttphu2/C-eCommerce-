@@ -75,16 +75,17 @@ export class ProductDetailsComponent implements OnInit {
       });
       return;
     }
-    if (!this.basketService.checkStockProductInBasket(this.product, this.quantity, this.size, checkStock!.quantity ))
+    if (!this.basketService.checkStockProductInBasket(this.product, this.quantity, this.size, checkStock!.quantity))
     {
-      this.toastr.error('The quantity of this product is '+checkStock!.quantity, 'Quantity Error', {
+      this.toastr.error('The quantity of this product is ' + checkStock!.quantity, 'Quantity Error', {
         timeOut: 2000,
         positionClass: 'toast-bottom-center'
       });
       return;
     }
+    
    // this.product.productSizes.find(x => x.size == this.size )!.quantity = checkStock!.quantity - this.quantity;
-    this.basketService.addItemToBasket(this.product, this.quantity, +this.size);
+    this.basketService.addItemToBasket(this.product, this.quantity, +this.size,checkStock!.quantity);
   }
   incrementQuantity() {
     this.quantity++;

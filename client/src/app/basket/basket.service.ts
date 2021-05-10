@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -19,7 +20,8 @@ export class BasketService {
   shipping = 0;
 
 
-  constructor(private http: HttpClient) { }
+
+  constructor(private http: HttpClient,private toastr: ToastrService) { }
 
   createPaymentIntent(){
     return this.http.post<IBasket>(this.baseUrl + 'payments/' + this.getCurrentBasketValue().id, {})
@@ -82,22 +84,33 @@ export class BasketService {
     }
     return true;
   }
-  addItemToBasket(item: IProduct, quantity = 1, size: number){
-    const itemToAdd: IBasketItem = this.mapProductItemToBasketItem(item, quantity, size); // map data
-
+  addItemToBasket(item: IProduct, quantity = 1, size: number, stockInStore: number){
+    const itemToAdd: IBasketItem = this.mapProductItemToBasketItem(item, quantity, size, stockInStore); // map data
+    console.log("St in store" + stockInStore);
     // Neu chua co gio hang thi tao moi
     // tuong duong code
     // getCurrentBasketValue() !== null && getCurrentBasketValue() !== undefined ? getCurrentBasketValue() : this.createBasket()
     const basket = this.getCurrentBasketValue() ?? this.createBasket();
     console.log(basket);
     // Kiem tra neu item da co trong gio hang thi` tang so luong nguoc lai them moi
-    basket.items = this.addOrUpdateItem(basket.items, itemToAdd, quantity, size);
+    basket.items = this.addOrUpdateItem(basket.items, itemToAdd, quantity, size, stockInStore);
     this.setBasket(basket);
 
   }
   incrementItemQuantity(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
     const foundItemIndex = basket.items.findIndex(x => x.id === item.id && x.size === item.size);
+    console.log(basket.items[foundItemIndex].quantity);
+    console.log(basket.items[foundItemIndex].stockInStore);
+    if (basket.items[foundItemIndex].quantity + 1 > basket.items[foundItemIndex].stockInStore)
+    {
+      this.toastr.error('The quantity of this product is ' + basket.items[foundItemIndex].stockInStore, 'Quantity Error', {
+        timeOut: 2000,
+        positionClass: 'toast-bottom-center'
+      });
+      return;
+
+    }
     basket.items[foundItemIndex].quantity++;
     this.setBasket(basket);
   }
@@ -143,11 +156,15 @@ export class BasketService {
     this.basketTotalSource.next({shipping, total, subtotal});
   }
 
-  private addOrUpdateItem(items: IBasketItem[], itemToAdd: IBasketItem, quantity: number, size: number): IBasketItem[] {
+  private addOrUpdateItem(items: IBasketItem[], itemToAdd: IBasketItem, quantity: number
+                          , size: number, stockInStore: number): IBasketItem[] {
     console.log(items);
     const index = items.findIndex(i => i.id === itemToAdd.id && i.size === itemToAdd.size);
     if (index === -1) {
+      //console.log(itemToAdd.stockInStore);
       itemToAdd.quantity = quantity;
+      console.log("SIS:"+stockInStore);
+      itemToAdd.stockInStore = stockInStore;
       items.push(itemToAdd);
     } else {
       items[index].quantity += quantity;
@@ -159,7 +176,7 @@ export class BasketService {
     localStorage.setItem('basket_id', basket.id);
     return basket;
   }
-  mapProductItemToBasketItem(item: IProduct, quantity: number, sizeProduct: number): IBasketItem {
+  mapProductItemToBasketItem(item: IProduct, quantity: number, sizeProduct: number, stock: number): IBasketItem {
    return {
      id: item.id,
      productName: item.name,
@@ -168,7 +185,8 @@ export class BasketService {
      quantity,
      size: sizeProduct,
      brand: item.productBrand,
-     type: item.productType
+     type: item.productType,
+     stockInStore: stock
    };
   }
 }

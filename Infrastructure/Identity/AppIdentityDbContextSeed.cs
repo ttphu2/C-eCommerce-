@@ -28,6 +28,7 @@ namespace Infrastructure.Identity
                             State = "NY",
                             Zipcode = "90210"
                         }
+                       
                     },
                     new AppUser
                     {
@@ -48,6 +49,7 @@ namespace Infrastructure.Identity
 
                 foreach (var user in users)
                 {
+                   // user.AddWish(1);
                     await userManager.CreateAsync(user, "Pa$$w0rd");
                     await userManager.AddToRoleAsync(user, "Member");
                     if (user.Email == "admin@test.com") await userManager.AddToRoleAsync(user, "Admin");

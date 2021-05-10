@@ -46,7 +46,12 @@ namespace API.Helpers
             .ForMember(d => d.ProductId, o => o.MapFrom(s => s.Product.Id))
            // .ForMember(d => d.PictureUrl, o => o.MapFrom(s => s.Product.Photos.FirstOrDefault(x => x.IsMain).PictureUrl))
             .ForMember(d => d.PictureUrl, o => o.MapFrom<WarehouseUrlResolver>());
-        
+
+            CreateMap<WishList, WishListDto>()
+             .ForMember(d => d.Name, o => o.MapFrom(s => s.Product.Name))
+             .ForMember(d => d.Description, o => o.MapFrom(s => s.Product.Description))
+             .ForMember(d => d.Price, o => o.MapFrom(s => s.Product.Price))
+            ;
 
             
 
