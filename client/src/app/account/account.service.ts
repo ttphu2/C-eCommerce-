@@ -5,6 +5,7 @@ import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAddress } from '../shared/models/address';
+import { IProduct, IWish } from '../shared/models/product';
 import { ChangePasswordFormValues, IUser, IUserProfile, UserProfileFormValues } from '../shared/models/user';
 
 @Injectable({
@@ -93,6 +94,12 @@ export class AccountService {
   }
   changePassword(form: ChangePasswordFormValues) {
     return  this.http.put(this.baseUrl + 'account/changepassword', form);
+  }
+  getWishList(){
+    return this.http.get<IWish>(this.baseUrl + 'account/wishlist');
+  }
+  removeFromWishlist(productId: number){
+    return this.http.delete(this.baseUrl + 'account/wishlist/' + productId);
   }
 
 }

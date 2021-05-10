@@ -165,7 +165,7 @@ export class ShopService {
 addToWishlist(productId: number){
     return this.http.put(this.baseUrl + 'account/wishlist/' + productId, null);
 
-  }
+}
   removeFromWishlist(productId: number){
     return this.http.delete(this.baseUrl + 'account/wishlist/' + productId);
   }

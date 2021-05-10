@@ -9,6 +9,14 @@ export interface IProduct {
   photos: IPhoto[];
   productSizes: IProductSize[];
 }
+export interface IWish {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  pictureUrl: string;
+  productId: number;
+}
 export interface IPhoto {
   id: number;
   pictureUrl: string;
