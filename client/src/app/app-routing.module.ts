@@ -53,6 +53,12 @@ const routes: Routes = [
     loadChildren: () => import('./admin/admin.module')
       .then(mod => mod.AdminModule), data: { breadcrumb: 'Admin' }
   },
+  {
+    path: 'statistic',
+    canActivate: [AuthGuard, AdminGuard],
+    loadChildren: () => import('./statistics/statistics.module')
+      .then(mod => mod.StatisticsModule), data: { breadcrumb: 'Statistic' }
+  },
   { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
 ];
 

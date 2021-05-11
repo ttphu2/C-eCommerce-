@@ -19,6 +19,10 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { PhotoWidgetComponent } from './components/photo-widget/photo-widget.component';
 import {ImageCropperModule} from 'ngx-image-cropper';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import {MatTableModule} from '@angular/material/table';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
 // other imports omitted
 @NgModule({
   declarations: [PagingHeaderComponent, PagerComponent,
@@ -37,7 +41,12 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     TabsModule.forRoot(),
     NgxDropzoneModule,
     ImageCropperModule,
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot(),
+    MatTableModule,
+    BsDatepickerModule.forRoot(),
+    MatPaginatorModule,
+    MatSortModule
+
 
   ],
   exports: [
@@ -59,7 +68,11 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     NgxDropzoneModule,
     ImageCropperModule,
     PhotoWidgetComponent,
-    ButtonsModule
+    ButtonsModule,
+    MatTableModule,
+    BsDatepickerModule,
+    MatPaginatorModule,
+    MatSortModule
    ]
 })
 export class SharedModule { }
