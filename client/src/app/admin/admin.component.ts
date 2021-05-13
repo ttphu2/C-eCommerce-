@@ -1,5 +1,6 @@
 import { ViewChild } from '@angular/core';
 import { Component, ElementRef, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { IProduct, IWarehouse } from '../shared/models/product';
 import { ShopParams, WarehouseParams } from '../shared/models/shopParams';
@@ -19,7 +20,8 @@ export class AdminComponent implements OnInit {
   shopParams: ShopParams;
   warehouseParams: WarehouseParams;
   totalWarehouse: number;
-  constructor(private shopService: ShopService, private adminService: AdminService) {
+  isWarehouse = this.route.snapshot.paramMap.get('isWarehouse')?true:false;
+  constructor(private shopService: ShopService, private adminService: AdminService,private router: Router,private route: ActivatedRoute) {
     this.shopParams = this.shopService.getShopParams();
     this.warehouseParams = this.shopService.getWarehouseParams();
    }
@@ -98,6 +100,6 @@ export class AdminComponent implements OnInit {
     this.shopService.setShopParams(this.shopParams);
     this.getProducts();
   }
-  
+
 
 }

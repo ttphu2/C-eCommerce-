@@ -53,7 +53,8 @@ namespace API.Helpers
              .ForMember(d => d.Price, o => o.MapFrom(s => s.Product.Price))
              .ForMember(d => d.PictureUrl, o => o.MapFrom<WishListUrlResolver>());
             ;
-
+            CreateMap<WarehouseReceipt, WarehouseReceiptDto>().ReverseMap();
+            CreateMap<WarehouseReceipt, WarehouseReceiptToReturnDto>();
             
 
         }

@@ -22,7 +22,7 @@ export class EditProductSizesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.route.snapshot.url[0].path === 'edit') {
+    if (this.route.snapshot.url[0].path === 'edit_size') {
       this.loadProductSize();
     }
 

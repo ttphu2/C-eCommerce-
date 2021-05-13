@@ -22,7 +22,10 @@ namespace Infrastructure.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
-         public DbSet<WishList> WishLists { get; set; }
+        public DbSet<WishList> WishLists { get; set; }
+        public DbSet<WarehouseReceipt> WarehouseReceipts { get; set; }
+      //  public DbSet<ReceiptDetail> ReceiptDetails { get; set; }
+        
 
         //OnModelCreating dùng để customize database entity
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +33,7 @@ namespace Infrastructure.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+          //  modelBuilder.Entity<ReceiptDetail>().HasKey(sc => new { sc.ProductId, sc.WarehouseReceiptId });
 
             //convert kiêu decimal sang kiểu double
             if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")

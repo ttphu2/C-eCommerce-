@@ -12,9 +12,9 @@ export class BusyService {
   busy(){
     this.busyRequestCount++;
     this.spinnerService.show(undefined, {
-      type: 'timer',
+      type: 'ball-clip-rotate-pulse',
       bdColor: 'rgba(255,255,255.0.7)',
-      color: '#333333'
+      color: '#3f51b5'
     });
   }
 

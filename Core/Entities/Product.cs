@@ -41,7 +41,7 @@ namespace Core.Entities
             var productSize = _productSizes.Find(x => x.Size == size);
             if (productSize != null)
             {
-                productSize.Quantity = quantity;
+                productSize.Quantity += quantity;
             }
             else
             {

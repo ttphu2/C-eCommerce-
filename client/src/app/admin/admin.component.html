@@ -4,7 +4,7 @@
       <div class="col-lg-12">
         <div class="tab-panel mt-3">
           <tabset class="product-tabset">
-            <tab heading="Product Manager">
+            <tab heading="Product Manager" [active]="!isWarehouse">
               <div class="col-lg-12">
                 <div class="my-3">
                   <header class="h2">Product List</header>
@@ -125,15 +125,15 @@
                 </div>
               </div>
             </tab>
-            <tab heading="Warehouse">
+            <tab heading="Warehouse" [active]="isWarehouse">
               <div class="col-lg-12">
                 <div class="d-flex justify-content-between my-3">
                   <header class="h2">Warehouse</header>
                   <button
-                    [routerLink]="['/admin/create_size']"
+                    [routerLink]="['/admin/create_receipt']"
                     class="btn btn-outline-success"
                   >
-                    Create new product
+                    Create new receipt
                   </button>
                 </div>
 

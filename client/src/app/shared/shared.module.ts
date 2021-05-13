@@ -23,6 +23,10 @@ import {MatTableModule} from '@angular/material/table';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 // other imports omitted
 @NgModule({
   declarations: [PagingHeaderComponent, PagerComponent,
@@ -45,7 +49,11 @@ import {MatSortModule} from '@angular/material/sort';
     MatTableModule,
     BsDatepickerModule.forRoot(),
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
 
 
   ],
@@ -72,7 +80,12 @@ import {MatSortModule} from '@angular/material/sort';
     MatTableModule,
     BsDatepickerModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
+
    ]
 })
 export class SharedModule { }
