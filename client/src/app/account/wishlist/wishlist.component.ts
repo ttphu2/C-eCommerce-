@@ -26,7 +26,7 @@ export class WishlistComponent implements OnInit {
   handleRemoveFromWishList(id: number){
     this.accountService.removeFromWishlist(id).subscribe(() => {
       this.products = this.products.filter(i => i.productId !== id);
-    })
+    });
   }
 
 }

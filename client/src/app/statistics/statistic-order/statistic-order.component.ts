@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { Label } from 'ng2-charts';
 import { IOrder } from 'src/app/shared/models/order';
 import { StatisticsService } from '../statistics.service';
 export interface Transaction {
@@ -19,6 +21,7 @@ export class StatisticOrderComponent implements OnInit {
   daterangepickerModel: Date[];
   datepickerModel: Date;
   radioModel = 'month';
+
   constructor(private statisticService: StatisticsService) { }
 
   ngOnInit(): void {

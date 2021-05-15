@@ -4,5 +4,16 @@ export interface IAddress {
   street: string;
   city: string;
   state: string;
-  zipCode: string;
+  zipcode: string;
+}
+export class AddressFormValues implements IAddress {
+  firstName: '';
+  lastName: '';
+  street: '';
+  city: '';
+  state: '';
+  zipcode: '';
+  constructor(init?: AddressFormValues) {
+    Object.assign(this, init);
+  }
 }

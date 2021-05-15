@@ -6,12 +6,14 @@ import { RegisterComponent } from './register/register.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
+import { EditAddressComponent } from './edit-address/edit-address.component';
 
 
 const routes: Routes  = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'edit', component: EditProfileComponent, data: {breadcrumb: 'Edit Profile'}},
+  {path: 'address', component: EditAddressComponent, data: {breadcrumb: 'Edit Address'}},
   {path: 'changepassword', component: ChangePasswordComponent, data: {breadcrumb: 'Change Password'}},
   {path: 'wishlist', component: WishlistComponent, data: {breadcrumb: 'Wish List'}}
 ];

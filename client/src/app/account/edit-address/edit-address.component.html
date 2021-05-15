@@ -18,7 +18,7 @@
       <div class="col-md-6">
         <div class="profile-head">
           <h5>
-            {{ user.displayName }}
+            Edit Address User
           </h5>
           <h6>
             {{ user.email }}
@@ -54,7 +54,6 @@
           <p>WORK LINK</p>
           <a
             routerLink="/account/edit"
-            style="color: blue"
             routerLinkActive="active"
             href=""
             >Profile</a
@@ -68,6 +67,7 @@
           <a
             routerLink="/account/address"
             routerLinkActive="active"
+            style="color: blue"
             href=""
             >Address</a
           ><br />
@@ -87,41 +87,6 @@
             role="tabpanel"
             aria-labelledby="home-tab"
           >
-            <div class="row mt-2">
-              <div class="col-md-6">
-                <label>Display Name</label>
-              </div>
-              <div class="col-md-6" *ngIf="toggleEdit == false">
-                <p>{{ user.displayName }}</p>
-              </div>
-              <div class="col-md-6" *ngIf="toggleEdit == true">
-                <input
-                  [ngClass]="{
-                    'is-invalid':
-                      displayname.invalid &&
-                      (displayname.dirty || displayname.touched)
-                  }"
-                  required
-                  class="form-control"
-                  type="text"
-                  placeholder="displayname"
-                  name="displayName"
-                  #displayname="ngModel"
-                  [(ngModel)]="profileForm.displayName"
-                />
-                <div
-                  *ngIf="
-                    displayname.invalid &&
-                    (displayname.dirty || displayname.touched)
-                  "
-                  class="invalid-feedback"
-                >
-                  <div *ngIf="displayname.errors?.required">
-                    Display name is required
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <div class="row mt-2">
               <div class="col-md-6">
@@ -143,7 +108,7 @@
                   placeholder="firstName"
                   name="firstName"
                   #firstName="ngModel"
-                  [(ngModel)]="profileForm.firstName"
+                  [(ngModel)]="addressForm.firstName"
                 />
                 <div
                   *ngIf="
@@ -162,7 +127,7 @@
                 <label>Last Name</label>
               </div>
               <div class="col-md-6" *ngIf="toggleEdit == false">
-                <p>{{ user.lastName }}</p>
+                <p>{{ addressForm.lastName }}</p>
               </div>
               <div class="col-md-6" *ngIf="toggleEdit == true">
                 <input
@@ -176,7 +141,7 @@
                   placeholder="lastName"
                   name="lastName"
                   #lastName="ngModel"
-                  [(ngModel)]="profileForm.lastName"
+                  [(ngModel)]="addressForm.lastName"
                 />
                 <div
                   *ngIf="
@@ -192,95 +157,139 @@
             </div>
             <div class="row mt-2">
               <div class="col-md-6">
-                <label>Phone</label>
+                <label>Street</label>
               </div>
               <div class="col-md-6" *ngIf="toggleEdit == false">
-                <p>{{ user.phone }}</p>
+                <p>{{ addressForm.street }}</p>
               </div>
               <div class="col-md-6" *ngIf="toggleEdit == true">
                 <input
                   [ngClass]="{
                     'is-invalid':
-                      phone.invalid && (phone.dirty || phone.touched)
+                    street.invalid && (street.dirty || street.touched)
                   }"
                   required
                   class="form-control"
                   type="text"
-                  placeholder="phone"
-                  name="phone"
-                  #phone="ngModel"
-                  pattern="(84|0[3|5|7|8|9])+([0-9]{8})\b"
-                  [(ngModel)]="profileForm.phone"
+                  placeholder="street"
+                  name="street"
+                  #street="ngModel"
+                  [(ngModel)]="addressForm.street"
                 />
-                <div
-                  *ngIf="phone.invalid && (phone.dirty || phone.touched)"
-                  class="invalid-feedback"
-                >
-                  <div *ngIf="phone.errors?.required">Phone is required</div>
-                  <div *ngIf="phone.errors?.pattern">Phone is not valid</div>
-                </div>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="col-md-6">
-                <label>Birthday</label>
-              </div>
-              <div class="col-md-6" *ngIf="toggleEdit == false">
-                <p>{{ user.birthday | date: "MM/dd/yyyy" }}</p>
-              </div>
-              <div class="col-md-6" *ngIf="toggleEdit == true">
-                <input
-                  [ngClass]="{
-                    'is-invalid':
-                      birthday.invalid && (birthday.dirty || birthday.touched)
-                  }"
-                  required
-                  class="form-control"
-                  type="date"
-                  placeholder="birthday"
-                  name="birthday"
-                  #birthday="ngModel"
-                  [ngModel]="profileForm.birthday | date: 'yyyy-MM-dd'"
-                  (ngModelChange)="profileForm.birthday = $event"
-                />
-
                 <div
                   *ngIf="
-                    birthday.invalid && (birthday.dirty || birthday.touched)
+                  street.invalid && (street.dirty || street.touched)
                   "
                   class="invalid-feedback"
                 >
-                  <div *ngIf="birthday.errors?.required">
-                    Birthday is required
+                  <div *ngIf="street.errors?.required">
+                    Street is required
                   </div>
                 </div>
               </div>
             </div>
             <div class="row mt-2">
               <div class="col-md-6">
-                <label>Gender</label>
+                <label>City</label>
               </div>
               <div class="col-md-6" *ngIf="toggleEdit == false">
-                <p>{{ user.gender }}</p>
+                <p>{{ addressForm.city }}</p>
               </div>
               <div class="col-md-6" *ngIf="toggleEdit == true">
-                <select
-                  id="type"
-                  class="form-control"
-                  name="gender"
-                  [(ngModel)]="profileForm.gender"
+                <input
+                  [ngClass]="{
+                    'is-invalid':
+                    city.invalid && (city.dirty || city.touched)
+                  }"
                   required
+                  class="form-control"
+                  type="text"
+                  placeholder="city"
+                  name="city"
+                  #city="ngModel"
+                  [(ngModel)]="addressForm.city"
+                />
+                <div
+                  *ngIf="
+                  city.invalid && (city.dirty || city.touched)
+                  "
+                  class="invalid-feedback"
                 >
-                  <option
-                    *ngFor="let item of optionGender"
-                    [selected]="profileForm.gender == item"
-                    [ngValue]="item"
-                  >
-                    {{ item }}
-                  </option>
-                </select>
+                  <div *ngIf="city.errors?.required">
+                    City is required
+                  </div>
+                </div>
               </div>
             </div>
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <label>State</label>
+              </div>
+              <div class="col-md-6" *ngIf="toggleEdit == false">
+                <p>{{ addressForm.state }}</p>
+              </div>
+              <div class="col-md-6" *ngIf="toggleEdit == true">
+                <input
+                  [ngClass]="{
+                    'is-invalid':
+                    state.invalid && (state.dirty || state.touched)
+                  }"
+                  required
+                  class="form-control"
+                  type="text"
+                  placeholder="state"
+                  name="state"
+                  #state="ngModel"
+                  [(ngModel)]="addressForm.state"
+                />
+                <div
+                  *ngIf="
+                  state.invalid && (state.dirty || state.touched)
+                  "
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="state.errors?.required">
+                    State is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <label>Zip code</label>
+              </div>
+              <div class="col-md-6" *ngIf="toggleEdit == false">
+                <p>{{ addressForm.zipcode }}</p>
+              </div>
+              <div class="col-md-6" *ngIf="toggleEdit == true">
+                <input
+                  [ngClass]="{
+                    'is-invalid':
+                    zipcode.invalid && (zipcode.dirty || zipcode.touched)
+                  }"
+                  required
+                  class="form-control"
+                  type="text"
+                  placeholder="zipcode"
+                  name="zipCode"
+                  #zipcode="ngModel"
+                  [(ngModel)]="addressForm.zipcode"
+                />
+                <div
+                  *ngIf="
+                  zipcode.invalid && (zipcode.dirty || zipcode.touched)
+                  "
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="zipcode.errors?.required">
+                    Zipcode is required
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
             <div class="row mt-3" *ngIf="toggleEdit == true">
               <div class="col-md-6">
                 <button

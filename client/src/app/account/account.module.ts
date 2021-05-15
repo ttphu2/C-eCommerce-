@@ -7,11 +7,12 @@ import { SharedModule } from '../shared/shared.module';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
+import { EditAddressComponent } from './edit-address/edit-address.component';
 
 
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, EditProfileComponent, ChangePasswordComponent, WishlistComponent],
+  declarations: [LoginComponent, RegisterComponent, EditProfileComponent, ChangePasswordComponent, WishlistComponent, EditAddressComponent],
   imports: [
     CommonModule,
     AccountRoutingModule,

@@ -26,3 +26,21 @@ export interface IOrderItem {
   price: number;
   quantity: number;
 }
+export interface IOrderItem1 {
+  productId: number;
+  productName: string;
+  pictureUrl: string;
+  price: number;
+  quantity: number;
+}
+export class OrderItemForm implements IOrderItem {
+  productId: number;
+  productName: "";
+  pictureUrl: "";
+  price: 0;
+  quantity: 0;
+
+  constructor(init?: OrderItemForm) {
+    Object.assign(this, init);
+  }
+}

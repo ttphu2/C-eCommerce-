@@ -7,8 +7,14 @@
           <header class="h2">Statistic Orders</header>
         </div>
         <div class="row my-3">
-          <div class="col-xs-12 col-md-12">
-            <button class="btn btn-primary" [routerLink]="['/statistic/revenue']" type="button">Go to revenue statistics</button>
+          <div class="col-xs-4 col-md-4">
+            <button class="btn btn-light btn-block p-5 text-primary" [routerLink]="['/statistic/revenue']" type="button"><span style="display: block;"><mat-icon aria-hidden="false" aria-label="Example home icon">attach_money</mat-icon></span>Revenue statistics</button>
+          </div>
+          <div class="col-xs-4 col-md-4">
+            <button class="btn btn-light btn-block p-5 text-primary" [routerLink]="['/statistic/bestselling']" type="button"><span style="display: block;"><mat-icon aria-hidden="false" aria-label="Example home icon">show_chart</mat-icon></span>Best selling statistics</button>
+          </div>
+          <div class="col-xs-4 col-md-4">
+            <button class="btn btn-light btn-block p-5 text-primary" [routerLink]="['/statistic/highestrevenue']" type="button"><span style="display: block;"><mat-icon aria-hidden="false" aria-label="Example home icon">recommend</mat-icon></span>Highest revenue statistics</button>
           </div>
         </div>
         <div class="row">
