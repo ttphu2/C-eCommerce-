@@ -10,11 +10,12 @@ import { EditProductSizesComponent } from './edit-product-sizes/edit-product-siz
 import { WarehouseRecepitComponent } from './warehouse-recepit/warehouse-recepit.component';
 import { AdminOrdersComponent } from './admin-orders/admin-orders.component';
 import { EditOrderComponent } from './edit-order/edit-order.component';
+import { DialogProductComponent } from './dialog-product/dialog-product.component';
 
 
 
 @NgModule({
-  declarations: [AdminComponent, EditProductComponent, EditProductFormComponent, EditProductPhotosComponent, EditProductSizesComponent, WarehouseRecepitComponent, AdminOrdersComponent, EditOrderComponent],
+  declarations: [AdminComponent, EditProductComponent, EditProductFormComponent, EditProductPhotosComponent, EditProductSizesComponent, WarehouseRecepitComponent, AdminOrdersComponent, EditOrderComponent, DialogProductComponent],
   imports: [
     CommonModule,
     SharedModule,

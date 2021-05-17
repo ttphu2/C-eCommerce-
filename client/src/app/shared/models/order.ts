@@ -1,4 +1,4 @@
-import { IAddress } from './address';
+import { IAddress, IAddressOrder } from './address';
 
 export interface IOrderToCreate {
   basketId: string;
@@ -25,20 +25,34 @@ export interface IOrderItem {
   pictureUrl: string;
   price: number;
   quantity: number;
+  size: number;
 }
-export interface IOrderItem1 {
-  productId: number;
-  productName: string;
-  pictureUrl: string;
-  price: number;
-  quantity: number;
+
+export interface IOrderToAdd {
+  orderItems: IOrderItem[];
+  deliveryMethodId: number;
+  shipToAddress: IAddressOrder;
 }
+export class OrderForm implements IOrderToAdd {
+  orderItems: IOrderItem[];
+  deliveryMethodId: 1;
+  shipToAddress: IAddressOrder;
+
+  constructor(init?: OrderForm) {
+    Object.assign(this, init);
+  }
+
+
+}
+
+
 export class OrderItemForm implements IOrderItem {
   productId: number;
   productName: "";
   pictureUrl: "";
   price: 0;
   quantity: 0;
+  size:36;
 
   constructor(init?: OrderItemForm) {
     Object.assign(this, init);

@@ -58,8 +58,8 @@ const routes: Routes = [
     canActivate: [AuthGuard, AdminGuard],
     loadChildren: () => import('./statistics/statistics.module')
       .then(mod => mod.StatisticsModule), data: { breadcrumb: 'Statistic' }
-  },
-  { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
+  }
+ // { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
 ];
 
 @NgModule({

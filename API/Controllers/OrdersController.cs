@@ -6,6 +6,7 @@ using API.Dtos;
 using API.Errors;
 using API.Extensions;
 using AutoMapper;
+using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Core.Specifications;
@@ -35,6 +36,25 @@ namespace API.Controllers
             if (order == null) return BadRequest(new ApiResponse(400, "Problem creating order"));
             return Ok(order);
         }
+        [HttpPost("admin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Order>> CreateOrderAdmin(OrderToCreateDto orderDto)
+        {
+            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+            var order = await _orderSevice.CreateOrderAdminAsync(email, orderDto.DeliveryMethodId, _mapper.Map<List<OrderItemDto>,List<BasketItem>>(orderDto.OrderItems), orderDto.ShipToAddress);
+            if (order == null) return BadRequest(new ApiResponse(400, "Problem creating order"));
+            return Ok(order);
+        }
+        
+        [HttpPut("admin/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Order>> UpdateOrderAdmin(int id,OrderToCreateDto orderDto)
+        {
+            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+            var order = await _orderSevice.UpdateOrderAdminAsync(id,email, orderDto.DeliveryMethodId, _mapper.Map<List<OrderItemDto>,List<BasketItem>>(orderDto.OrderItems), orderDto.ShipToAddress);
+            if (order == null) return BadRequest(new ApiResponse(400, "Problem creating order"));
+            return Ok(order);
+        }
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrdersForUser()
         {
@@ -53,13 +73,23 @@ namespace API.Controllers
            // var data = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders);
             return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
+        [HttpGet("all/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<OrderToReturnDto>> GetOrderById(int id)
+        {
+            var spec = new OrdersAllWithItemsAndOrderingSpecification(id);
+            var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+             if (order == null) return NotFound(new ApiResponse(404));
+            return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
+        }
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
             var order = await _orderSevice.GetOrderByIdAsync(id, email);
             if (order == null) return NotFound(new ApiResponse(404));
-            return _mapper.Map<Order, OrderToReturnDto>(order);
+           return _mapper.Map<Order, OrderToReturnDto>(order);
+           
         }
         [HttpGet("deliveryMethods")]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()

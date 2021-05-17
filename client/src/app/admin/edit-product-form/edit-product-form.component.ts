@@ -23,17 +23,19 @@ export class EditProductFormComponent implements OnInit {
   updatePrice(event: any) {
     this.product.price = event;
   }
-  
+
   onSubmit(product: ProductFormValues) {
     if (this.route.snapshot.url[0].path === 'edit') {
       const updatedProduct = {...this.product, ...product, price: +product.price};
       this.adminService.updateProduct(updatedProduct, Number(this.route.snapshot.paramMap.get('id'))).subscribe((response: any) => {
         this.router.navigate(['/admin']);
+
       });
     } else {
       const newProduct = {...product, price: +product.price};
       this.adminService.createProduct(newProduct).subscribe((response: any) => {
         this.router.navigate(['/admin']);
+
       });
     }
   }

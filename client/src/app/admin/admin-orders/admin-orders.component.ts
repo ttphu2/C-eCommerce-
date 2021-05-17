@@ -7,6 +7,7 @@ import { AdminService } from '../admin.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Alignment, Column, Decoration, Margins, TDocumentDefinitions, TFontFamilyTypes } from 'pdfmake/interfaces';
+import { ActivatedRoute, Router } from '@angular/router';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -21,7 +22,8 @@ export class AdminOrdersComponent implements OnInit {
   @ViewChild('TableOnePaginator', {static: true}) tableOnePaginator: MatPaginator;
   @ViewChild('TableOneSort', {static: true}) tableOneSort: MatSort;
   dataSource: MatTableDataSource<IOrder>;
-  constructor(private adminService: AdminService) { }
+  constructor(private adminService: AdminService, private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.getOrders();

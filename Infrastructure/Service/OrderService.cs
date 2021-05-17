@@ -21,7 +21,73 @@ namespace Infrastructure.Service
             _basketRepo = basketRepo;
 
         }
+        public async Task<Order> CreateOrderAdminAsync(string buyerEmail, int deliveryMethodId, List<BasketItem> orderItems, Address shippingAddress)
+        {
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+            
+            var items = new List<OrderItem>();
+            foreach (var item in orderItems)
+            {
+                var specProduct = new ProductWithTypesAndBrandsSpecification(item.Id);
+                var productItem = await _unitOfWork.Repository<Product>().GetEntityWithSpec(specProduct);
+                var itemOrdered = new ProductItemOrdered(productItem.Id, item.Size, productItem.Name,
+                 productItem.Photos.FirstOrDefault(x => x.IsMain)?.PictureUrl);
+                var productSize = productItem.ProductSizes.FirstOrDefault(x => x.Size == item.Size);
+                var orderItem = new OrderItem();
+                if (item.Quantity > productSize.Quantity)
+                {
+                    orderItem = new OrderItem(itemOrdered, productItem.Price, productSize.Quantity);
+                    productSize.Quantity = 0;
+                }
+                else
+                {
+                    orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
+                    productSize.Quantity = productSize.Quantity - item.Quantity;
 
+                }
+                productItem.AddOrUpdateProductSize(productSize.Size, productSize.Quantity);
+                _unitOfWork.Repository<Product>().Update(productItem);
+
+                items.Add(orderItem);
+            }
+            var subtotal = items.Sum(item => item.Price * item.Quantity);
+            var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal);
+            order.Status = OrderStatus.PaymentRecevied;
+           _unitOfWork.Repository<Order>().Add(order);
+            var result = await _unitOfWork.Complete();
+            //return order
+            return order;
+        }
+        public async Task<Order> UpdateOrderAdminAsync(int idOrder,string buyerEmail, int deliveryMethodId, List<BasketItem> orderItems, Address shippingAddress)
+        {
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+            var spec = new OrdersAllWithItemsAndOrderingSpecification(idOrder);
+            var orderOld  = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+
+            var items = new List<OrderItem>();
+            foreach (var item in orderItems)
+            {
+                var specProduct = new ProductWithTypesAndBrandsSpecification(item.Id);
+                var productItem = await _unitOfWork.Repository<Product>().GetEntityWithSpec(specProduct);
+                var itemOrdered = new ProductItemOrdered(productItem.Id, item.Size, productItem.Name,
+                 productItem.Photos.FirstOrDefault(x => x.IsMain)?.PictureUrl);
+                var productSize = productItem.ProductSizes.FirstOrDefault(x => x.Size == item.Size);
+                var orderItem = new OrderItem();
+                
+                orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
+                items.Add(orderItem);
+            }
+            var subtotal = items.Sum(item => item.Price * item.Quantity);
+            //var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal);
+            orderOld.OrderItems = items;
+            orderOld.ShipToAddress = shippingAddress;
+            orderOld.DeliveryMethod = deliveryMethod;
+            orderOld.Subtotal = subtotal;
+           _unitOfWork.Repository<Order>().Update(orderOld);
+            var result = await _unitOfWork.Complete();
+            //return order
+            return orderOld;
+        }
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string basketId, Address shippingAddress)
         {
             //get bastket from the repo
@@ -53,6 +119,7 @@ namespace Infrastructure.Service
                 items.Add(orderItem);
 
             }
+            
             //get delivery method from repo
             var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
 

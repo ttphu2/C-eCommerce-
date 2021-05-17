@@ -1,40 +1,346 @@
 <section class="product-edit m-3">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-9">
-        <div class="col-sm-12 mh-30 hidescroll border" style="overflow-y: scroll;max-height: 450px;">
-          
+      <div class="col-md-8">
+        <button mat-raised-button tabindex="-1" (click)="openDialog()">
+          New Item
+        </button>
+        <div
+          class="col-sm-12 mh-30 border hidescroll mt-2"
+          style="overflow-y: scroll; max-height: 450px"
+        >
+          <table mat-table [dataSource]="dataSource">
+            <!-- Item Column -->
+            <ng-container matColumnDef="name" >
+              <th mat-header-cell *matHeaderCellDef width="28%" >Name</th>
+              <td mat-cell *matCellDef="let transaction">
+                {{ transaction.productName }}
+              </td>
+              <td mat-footer-cell *matFooterCellDef>Total</td>
+            </ng-container>
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef>Price</th>
+              <td mat-cell *matCellDef="let transaction">
+                {{ transaction.price | currency }}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Quantity</th>
+              <td mat-cell *matCellDef="let transaction; let i = index">
+                <mat-form-field style="width:80px !important">
+                  <input
+                    matInput
+
+                    [(ngModel)]="orderForm.orderItems[i].quantity"
+                  />
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="size">
+              <th mat-header-cell *matHeaderCellDef>Size</th>
+              <td mat-cell *matCellDef="let transaction; let i = index">
+                <mat-form-field style="width:80px !important">
+                <mat-select
+                  matNativeControl
+                  [(ngModel)]="orderForm.orderItems[i].size"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let size of optionSize"
+                    [value]="size"
+                  >
+                    {{size}}
+                  </mat-option>
+                </mat-select>
+                </mat-form-field>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="total" *ngIf="dataSource != null">
+              <th mat-header-cell *matHeaderCellDef>Total</th>
+              <td mat-cell *matCellDef="let transaction">
+                {{ transaction.quantity * transaction.price | currency }}
+              </td>
+              <td  mat-footer-cell *matFooterCellDef >{{getTotalCost() | currency}}</td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let transaction">
+                <button mat-icon-button color="primary" title="Delete item" (click)="onDeleteItem(transaction)"><mat-icon>delete</mat-icon></button>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+          </table>
         </div>
       </div>
-      <div class="col-md-3 border">
-        <div class="row">
-          <div class="col-sm-12 mh-30" style="overflow-y: scroll;max-height: 450px;">
-            <h4>I Scroll</h4>
-            <p>Sriracha biodiesel taxidermy organic post-ironic, Intelligentsia salvia mustache 90's code editing brunch. Butcher polaroid VHS art party, hashtag Brooklyn deep v PBR narwhal sustainable mixtape swag wolf squid tote bag. Tote bag cronut semiotics,
-                raw denim deep v taxidermy messenger bag. Tofu YOLO Etsy, direct trade ethical Odd Future jean shorts paleo. Forage Shoreditch tousled aesthetic irony, street art organic Bushwick artisan cliche semiotics ugh synth chillwave meditation.
-                Shabby chic lomo plaid vinyl chambray Vice. Vice sustainable cardigan, Williamsburg master cleanse hella DIY 90's blog.</p>
 
-            <p>Ethical Kickstarter PBR asymmetrical lo-fi. oreamcatcher street art Carles, stumptown gluten-free Kickstarter artisan Wes Anderson wolf pug. Godard sustainable you probably haven't heard of them, vegan farm-to-table Williamsburg slow-carb
-                readymade disrupt deep v. Meggings seitan Wes Anderson semiotics, cliche American Apparel whatever. Helvetica cray plaid, vegan brunch Banksy leggings +1 direct trade. Wayfarers codeply PBR selfies. Banh mi McSweeney's Shoreditch selfies,
-                forage fingerstache food truck occupy YOLO Pitchfork fixie iPhone fanny pack art party Portland.</p>
-
-            <p>Sriracha biodiesel taxidermy organic post-ironic, Intelligentsia salvia mustache 90's code editing brunch. Butcher polaroid VHS art party, hashtag Brooklyn deep v PBR narwhal sustainable mixtape swag wolf squid tote bag. Tote bag cronut semiotics,
-                raw denim deep v taxidermy messenger bag. Tofu YOLO Etsy, direct trade ethical Odd Future jean shorts paleo. Forage Shoreditch tousled aesthetic irony, street art organic Bushwick artisan cliche semiotics ugh synth chillwave meditation.
-                Shabby chic lomo plaid vinyl chambray Vice. Vice sustainable cardigan, Williamsburg master cleanse hella DIY 90's blog.</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="position-sticky border">
-              <h1>Button</h1>
+      <div class="col-md-4 border">
+        <form
+          #productForm="ngForm"
+          (ngSubmit)="onSubmit(productForm.valid && productForm.value)"
+        >
+          <div class="row">
+            <div
+              class="col-sm-12 mh-30"
+              style="overflow-y: scroll; max-height: 450px"
+            >
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="my-3">
+                    <header class="h2">Address</header>
+                  </div>
+                  <div class="form-group row mt-1">
+                    <label for="firstName" class="col-sm-4 col-form-label"
+                      >First name</label
+                    >
+                    <div class="col-md-8">
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            firstName.invalid &&
+                            (firstName.dirty || firstName.touched)
+                        }"
+                        required
+                        type="text"
+                        class="form-control"
+                        id="firstName"
+                        placeholder="First Name"
+                        name="firstName"
+                        #firstName="ngModel"
+                        [(ngModel)]="orderForm.shipToAddress.firstName"
+                      />
+                      <div
+                        *ngIf="
+                          firstName.invalid &&
+                          (firstName.dirty || firstName.touched)
+                        "
+                        class="invalid-feedback"
+                      >
+                        <div *ngIf="firstName.errors?.required">
+                          First Name is required
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mt-1">
+                    <label for="firstName" class="col-sm-4 col-form-label"
+                      >Last name</label
+                    >
+                    <div class="col-md-8">
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            lastName.invalid &&
+                            (lastName.dirty || lastName.touched)
+                        }"
+                        required
+                        type="text"
+                        class="form-control"
+                        id="lastName"
+                        placeholder="Last Name"
+                        name="lastName"
+                        #lastName="ngModel"
+                        [(ngModel)]="orderForm.shipToAddress.lastName"
+                      />
+                      <div
+                        *ngIf="
+                          lastName.invalid &&
+                          (lastName.dirty || lastName.touched)
+                        "
+                        class="invalid-feedback"
+                      >
+                        <div *ngIf="lastName.errors?.required">
+                          Last Name is required
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mt-1">
+                    <label for="firstName" class="col-sm-4 col-form-label"
+                      >Street</label
+                    >
+                    <div class="col-md-8">
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            street.invalid && (street.dirty || street.touched)
+                        }"
+                        required
+                        type="text"
+                        class="form-control"
+                        id="street"
+                        placeholder="Street"
+                        name="street"
+                        #street="ngModel"
+                        [(ngModel)]="orderForm.shipToAddress.street"
+                      />
+                      <div
+                        *ngIf="
+                          street.invalid && (street.dirty || street.touched)
+                        "
+                        class="invalid-feedback"
+                      >
+                        <div *ngIf="street.errors?.required">
+                          Street is required
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mt-1">
+                    <label for="firstName" class="col-sm-4 col-form-label"
+                      >City</label
+                    >
+                    <div class="col-md-8">
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            city.invalid && (city.dirty || city.touched)
+                        }"
+                        required
+                        type="text"
+                        class="form-control"
+                        id="city"
+                        placeholder="City"
+                        name="city"
+                        #city="ngModel"
+                        [(ngModel)]="orderForm.shipToAddress.city"
+                      />
+                      <div
+                        *ngIf="city.invalid && (city.dirty || city.touched)"
+                        class="invalid-feedback"
+                      >
+                        <div *ngIf="city.errors?.required">
+                          City is required
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mt-1">
+                    <label for="firstName" class="col-sm-4 col-form-label"
+                      >State</label
+                    >
+                    <div class="col-md-8">
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            state.invalid && (state.dirty || state.touched)
+                        }"
+                        required
+                        type="text"
+                        class="form-control"
+                        id="state"
+                        placeholder="state"
+                        name="state"
+                        #state="ngModel"
+                        [(ngModel)]="orderForm.shipToAddress.state"
+                      />
+                      <div
+                        *ngIf="state.invalid && (state.dirty || state.touched)"
+                        class="invalid-feedback"
+                      >
+                        <div *ngIf="state.errors?.required">
+                          State is required
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row mt-1">
+                    <label for="firstName" class="col-sm-4 col-form-label"
+                      >Zipcode</label
+                    >
+                    <div class="col-md-8">
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            zipcode.invalid &&
+                            (zipcode.dirty || zipcode.touched)
+                        }"
+                        required
+                        type="text"
+                        class="form-control"
+                        id="zipcode"
+                        placeholder="zipcode"
+                        name="zipCode"
+                        #zipcode="ngModel"
+                        [(ngModel)]="orderForm.shipToAddress.zipCode"
+                      />
+                      <div
+                        *ngIf="
+                          zipcode.invalid && (zipcode.dirty || zipcode.touched)
+                        "
+                        class="invalid-feedback"
+                      >
+                        <div *ngIf="zipcode.errors?.required">
+                          Zipcode is required
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="my-3">
+                    <header class="h2">Delivery Method</header>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-8">
+                      <select
+                        id="methodId"
+                        class="form-control"
+                        name="deliveryMethodId"
+                        #deliveryMethodId="ngModel"
+                        [(ngModel)]="orderForm.deliveryMethodId"
+                        required
+                      >
+                        <option
+                          [selected]="orderForm.deliveryMethodId === 1"
+                          value="1"
+                        >
+                          STANDARD
+                        </option>
+                        <option
+                          [selected]="orderForm.deliveryMethodId === 2"
+                          value="2"
+                        >
+                          FAST
+                        </option>
+                        <option
+                          [selected]="orderForm.deliveryMethodId === 3"
+                          value="3"
+                        >
+                          NOW
+                        </option>
+                        <option
+                          [selected]="orderForm.deliveryMethodId === 4"
+                          value="4"
+                        >
+                          FREE
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-        </div>
-
-
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="position-sticky border">
+                <button  [disabled]="!productForm.valid" type="submit" class="btn btn-primary my-3 btn-block float-right">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
-
-  </div>
+    </div>
   </div>
 </section>

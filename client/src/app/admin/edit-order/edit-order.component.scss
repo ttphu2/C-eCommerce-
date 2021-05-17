@@ -5,7 +5,14 @@
 .hidescroll::-webkit-scrollbar-thumb {
   background: #FF0000;
 }
+table {
+  width: 100%;
+}
 
- 
+tr.mat-footer-row {
+  font-weight: bold;
+}
+
+
 
 

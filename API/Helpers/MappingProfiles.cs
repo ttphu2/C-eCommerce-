@@ -25,6 +25,7 @@ namespace API.Helpers
             CreateMap<Order, OrderToReturnDto>()
             .ForMember(d => d.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
             .ForMember(d => d.ShippingPrice, o => o.MapFrom(s => s.DeliveryMethod.Price));
+             CreateMap<OrderToCreateDto, Order>();
             
             CreateMap<OrderItem, OrderItemDto>()
             .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ItemOrdered.ProductItemId))
@@ -55,6 +56,8 @@ namespace API.Helpers
             ;
             CreateMap<WarehouseReceipt, WarehouseReceiptDto>().ReverseMap();
             CreateMap<WarehouseReceipt, WarehouseReceiptToReturnDto>();
+             CreateMap<OrderItemDto, BasketItem>()
+             .ForMember(d => d.Id, o => o.MapFrom(s => s.ProductId));
             
 
         }

@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Label, monkeyPatchChartJsLegend, monkeyPatchChartJsTooltip, SingleDataSet } from 'ng2-charts';
-import { IOrder, IOrderItem, IOrderItem1 } from 'src/app/shared/models/order';
+import { IOrder, IOrderItem } from 'src/app/shared/models/order';
 import { StatisticsService } from '../statistics.service';
 
 @Component({

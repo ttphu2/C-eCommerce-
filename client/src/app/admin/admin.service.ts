@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IOrder } from '../shared/models/order';
+import { IOrder, IOrderToAdd } from '../shared/models/order';
 import { IProduct, IProductSize, ProductFormValues, ProductSizeFormValues } from '../shared/models/product';
 import { IWarehouseReceipt, ReceiptFormValues } from '../shared/models/warehouseReceipt';
 
@@ -59,5 +59,14 @@ export class AdminService {
   }
   getOrders(){
     return this.http.get<IOrder[]>(this.baseUrl + 'orders/all');
+  }
+  getOrderById(id: number){
+    return this.http.get<IOrder>(this.baseUrl + 'orders/all/' + id);
+  }
+  createOrder(form: IOrderToAdd) {
+    return this.http.post<IOrderToAdd>(this.baseUrl + 'orders/admin', form);
+  }
+  updateOrder(id: number, form: IOrderToAdd) {
+    return this.http.put<IOrderToAdd>(this.baseUrl + 'orders/admin/' + id, form);
   }
 }

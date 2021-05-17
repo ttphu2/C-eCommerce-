@@ -129,3 +129,10 @@ body {
   text-align: center;
   cursor: pointer;
 }
+.mat-dialog-container {
+  z-index: 9999 !important;
+}
+.fixed-top{
+  z-index: 1000 !important;
+}
+

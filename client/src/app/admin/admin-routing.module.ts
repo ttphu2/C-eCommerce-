@@ -10,7 +10,8 @@ import { WarehouseRecepitComponent } from './warehouse-recepit/warehouse-recepit
 const routes: Routes = [
   {path: '', component: AdminComponent},
   {path: 'orders', component: AdminOrdersComponent, data: {breadcrumb: 'Admin Orders'}},
-  {path: 'orders/edit', component: EditOrderComponent, data: {breadcrumb: 'Edit Orders'}},
+  {path: 'orders/edit/:id', component: EditOrderComponent, data: {breadcrumb: 'Edit Orders'}},
+  {path: 'orders/create', component: EditOrderComponent, data: {breadcrumb: 'Create Orders'}},
   {path: 'create', component: EditProductComponent, data: {breadcrumb: 'Create'}},
   {path: 'edit/:id', component: EditProductComponent, data: {breadcrumb: 'Edit'}},
   {path: 'create_receipt', component: WarehouseRecepitComponent , data: {breadcrumb: 'Create Warehouse Receipt'}},

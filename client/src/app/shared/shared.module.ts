@@ -29,6 +29,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { ChartsModule } from 'ng2-charts';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSelectModule} from '@angular/material/select'
 // other imports omitted
 @NgModule({
   declarations: [PagingHeaderComponent, PagerComponent,
@@ -57,7 +60,11 @@ import { ChartsModule } from 'ng2-charts';
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
-    ChartsModule
+    ChartsModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatSelectModule
+
 
 
   ],
@@ -90,7 +97,10 @@ import { ChartsModule } from 'ng2-charts';
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
-    ChartsModule
+    ChartsModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatSelectModule
 
    ]
 })
