@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BasketService } from 'src/app/basket/basket.service';
 import { IProduct } from 'src/app/shared/models/product';
@@ -13,22 +13,37 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./product-details.component.scss']
 })
 export class ProductDetailsComponent implements OnInit {
+  wishList: number[] = [];
   product: IProduct;
   quantity = 1;
   size = 0;
   myForm: FormGroup;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
-
+  addedToWishList: boolean = false;
   constructor(private shopService: ShopService, private activeRoute: ActivatedRoute, private bcService: BreadcrumbService,
               private basketService: BasketService, private formBuilder: FormBuilder, private toastr: ToastrService) {
     this.bcService.set('@productDetails', ' ');
   }
 
   ngOnInit(): void {
+    this.getWishList();
     this.loadProduct();
     this.myForm = this.formBuilder.group({
       radio: '38'
+    });
+  }
+  getWishList(){
+    this.shopService.getWishList().subscribe(response => {
+      this.wishList = response;
+      if(this.wishList.indexOf(Number(this.activeRoute.snapshot.paramMap.get('id'))) >= 0){
+        this.addedToWishList = true;
+       }else {
+         this.addedToWishList = false;
+       }
+      console.log(this.wishList);
+    }, error => {
+      console.log(error);
     });
   }
   initializeGallery() {
@@ -83,7 +98,7 @@ export class ProductDetailsComponent implements OnInit {
       });
       return;
     }
-    
+
    // this.product.productSizes.find(x => x.size == this.size )!.quantity = checkStock!.quantity - this.quantity;
     this.basketService.addItemToBasket(this.product, this.quantity, +this.size,checkStock!.quantity);
   }
@@ -101,11 +116,22 @@ export class ProductDetailsComponent implements OnInit {
   loadProduct(){
     this.shopService.getProduct(Number(this.activeRoute.snapshot.paramMap.get('id'))).subscribe(product => {
       this.product = product;
+
       this.bcService.set('@productDetails', product.name);
       this.initializeGallery();
     }, error => {
       console.log(error);
     });
+  }
+  handleAddToWishList(){
+    this.shopService.addToWishlist(this.product.id).subscribe(() => {
+      this.addedToWishList = true;
+    })
+  }
+  handleRemoveFromWishList(){
+    this.shopService.removeFromWishlist(this.product.id).subscribe(() => {
+      this.addedToWishList = false;
+    })
   }
 
 }

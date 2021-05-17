@@ -16,14 +16,13 @@
         btnRadioGroup
         [(ngModel)]="size"
       >
-          <label
-           *ngFor="let prdsize of product?.productSizes"
-            btnRadio="{{ prdsize.size }}"
-            class="btn btn-outline-dark p-2 swatch-element"
-            [class.active]="size == prdsize.size"
-            >{{ prdsize.size }}
-          </label>
-
+        <label
+          *ngFor="let prdsize of product?.productSizes"
+          btnRadio="{{ prdsize.size }}"
+          class="btn btn-outline-dark p-2 swatch-element"
+          [class.active]="size == prdsize.size"
+          >{{ prdsize.size }}
+        </label>
       </div>
       <div class="d-flex justify-content-start align-items-center">
         <i
@@ -46,6 +45,30 @@
           class="btn btn-outline-primary btn-lg ml-4"
         >
           Add to Cart
+        </button>
+        <button
+          *ngIf="addedToWishList"
+          (click)="handleRemoveFromWishList()"
+          class="btn btn-lg ml-2"
+          style="font-size: 40px"
+          mat-icon-button
+          color="warn"
+          aria-label="Example icon button with a heart icon"
+          inline="true"
+        >
+          <mat-icon>favorite</mat-icon>
+        </button>
+        <button
+          *ngIf="!addedToWishList"
+          (click)="handleAddToWishList()"
+          class="btn btn-lg ml-2"
+          style="font-size: 40px"
+          mat-icon-button
+          color="warn"
+          aria-label="Example icon button with a heart icon"
+          inline="true"
+        >
+          <mat-icon>favorite_border</mat-icon>
         </button>
       </div>
     </div>
