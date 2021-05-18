@@ -31,7 +31,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import { ChartsModule } from 'ng2-charts';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatSelectModule} from '@angular/material/select'
+import {MatSelectModule} from '@angular/material/select';
+import {MatMenuModule} from '@angular/material/menu';
 // other imports omitted
 @NgModule({
   declarations: [PagingHeaderComponent, PagerComponent,
@@ -63,7 +64,8 @@ import {MatSelectModule} from '@angular/material/select'
     ChartsModule,
     MatDialogModule,
     MatCheckboxModule,
-    MatSelectModule
+    MatSelectModule,
+    MatMenuModule
 
 
 
@@ -100,7 +102,8 @@ import {MatSelectModule} from '@angular/material/select'
     ChartsModule,
     MatDialogModule,
     MatCheckboxModule,
-    MatSelectModule
+    MatSelectModule,
+    MatMenuModule
 
    ]
 })

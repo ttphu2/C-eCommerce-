@@ -12,6 +12,7 @@ namespace API.Dtos
         public string Gender { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
+        public DateTimeOffset LockoutEnd { get; set; }
         public string Token { get; set; }
     }
 }

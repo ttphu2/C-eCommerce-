@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Core.Entities.Identity;
 using Infrastructure.Identity;
@@ -15,14 +16,17 @@ namespace API.Extensions
         IConfiguration config)
         {
             // Thêm vào dịch vụ Identity với cấu hình mặc định cho AppUser (model user)
-            var builder = services.AddIdentityCore<AppUser>();
+            var builder = services.AddIdentityCore<AppUser>(options => {
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+            });
             builder = new IdentityBuilder(builder.UserType, typeof(AppRole), builder.Services);
             // Thêm triển khai EF lưu trữ thông tin về Idetity (theo AppDbContext -> MS SQL Server).
             builder.AddEntityFrameworkStores<AppIdentityDbContext>();
             builder.AddSignInManager<SignInManager<AppUser>>();
             builder.AddRoleValidator<RoleValidator<AppRole>>();
             builder.AddRoleManager<RoleManager<AppRole>>();
-           
+
 
             builder.AddSignInManager<SignInManager<AppUser>>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

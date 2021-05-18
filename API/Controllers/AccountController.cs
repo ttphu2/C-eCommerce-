@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -159,6 +160,43 @@ namespace API.Controllers
             return BadRequest("Problem updating the user");
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}/lock/{option}")]
+        public async Task<ActionResult<UserToUpdateDto>> LockUser(string id, int option)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            user.LockoutEnabled = true;
+            if (option == 1)
+            {
+                user.LockoutEnd = DateTime.Now.AddMinutes(10);
+            }
+            else if (option == 2)
+            {
+                user.LockoutEnd = DateTime.Now.AddDays(7);
+            }
+            else if (option == 3)
+            {
+                user.LockoutEnd = DateTime.Now.AddDays(30);
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded) return Ok(_mapper.Map<AppUser, UserToUpdateDto>(user));
+            return BadRequest("Problem updating the user");
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}/unlock")]
+        public async Task<ActionResult<UserToUpdateDto>> UnlockUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            user.LockoutEnabled = true;
+            user.LockoutEnd = DateTime.Now - TimeSpan.FromMinutes(1);
+
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded) return Ok(_mapper.Map<AppUser, UserToUpdateDto>(user));
+            return BadRequest("Problem updating the user");
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteUser(string id)
@@ -207,8 +245,11 @@ namespace API.Controllers
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user == null) return Unauthorized(new ApiResponse(401));
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true);
+           if (result.IsLockedOut) return Unauthorized(new ApiResponse(403,"Your account is locked"));
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
+            
+
             return new UserDto
             {
                 Email = user.Email,
@@ -329,9 +370,9 @@ namespace API.Controllers
         public async Task<ActionResult> AddWishItem(int id)
         {
             var user = await _userManager.FindByUserByClaimsPricipleEmailWithAddressAsync(HttpContext.User);
-            var spec = new WishWithProductForCheckExistSpecification(user.Id,id);
+            var spec = new WishWithProductForCheckExistSpecification(user.Id, id);
             var products = await _unitOfWork.Repository<WishList>().GetEntityWithSpec(spec);
-            if(products != null) return BadRequest(new ApiResponse(400, "Wish product was existing"));
+            if (products != null) return BadRequest(new ApiResponse(400, "Wish product was existing"));
             var wish = new WishList()
             {
                 AppUserId = user.Id,
@@ -350,10 +391,10 @@ namespace API.Controllers
         public async Task<ActionResult> DeleteWishItem(int id)
         {
             var user = await _userManager.FindByUserByClaimsPricipleEmailWithAddressAsync(HttpContext.User);
-            var spec = new WishWithProductForCheckExistSpecification(user.Id,id);
+            var spec = new WishWithProductForCheckExistSpecification(user.Id, id);
             var products = await _unitOfWork.Repository<WishList>().GetEntityWithSpec(spec);
-            if(products == null) return BadRequest(new ApiResponse(400, "Wish product was not existing"));
-        
+            if (products == null) return BadRequest(new ApiResponse(400, "Wish product was not existing"));
+
             _unitOfWork.Repository<WishList>().Delete(products);
 
             var result = await _unitOfWork.Complete();

@@ -8,6 +8,7 @@ export class IUser {
   birthday: string;
   gender: string;
   phone: string;
+  lockoutEnd: string;
 
 }
 

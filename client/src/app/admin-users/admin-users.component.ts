@@ -27,6 +27,7 @@ export class AdminUsersComponent implements OnInit {
     this.adminService.getUsers(useCache).subscribe(response => {
       this.users = response.data;
       this.totalCount = response.count;
+      console.log(this.users);
     }, error => {
       console.log(error);
     });
@@ -74,6 +75,25 @@ export class AdminUsersComponent implements OnInit {
     this.userParams = new UserParams();
     this.adminService.setUserParams(this.userParams);
     this.getUsers();
+  }
+  compareDates(date: string){
+    return (new Date(date)).getTime() >= (new Date()).getTime();
+  }
+  lockUser(id: string, option: number){
+    this.adminService.lockUser(id, option).subscribe(() => {
+      var index = this.users.findIndex( x => x.id == id);
+      var currentDate = new Date(this.users[index].lockoutEnd);
+      currentDate.setDate(currentDate.getDate() + 30);
+      this.users[index].lockoutEnd = currentDate.toISOString();
+    });
+  }
+  unlockUser(id: string){
+    this.adminService.unlockUser(id).subscribe(() => {
+     var index = this.users.findIndex( x => x.id == id);
+     var currentDate = new Date();
+     currentDate.setDate(currentDate.getDate() - 1);
+     this.users[index].lockoutEnd = currentDate.toISOString();
+    });
   }
 
 }

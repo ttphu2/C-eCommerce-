@@ -103,4 +103,10 @@ export class AdminUsersService {
       })
     );
   }
+  lockUser(id: string, option: number) {
+    return this.http.put(this.baseUrl + 'account/' + id + '/lock/' + option, null);
+  }
+  unlockUser(id: string) {
+    return this.http.put(this.baseUrl + 'account/' + id + '/unlock/', null);
+  }
 }
