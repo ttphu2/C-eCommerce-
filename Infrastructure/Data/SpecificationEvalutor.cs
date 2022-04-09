@@ -27,7 +27,7 @@ namespace Infrastructure.Data
             {
                 query = query.Skip(spec.Skip).Take(spec.Take);
             }
-
+            //Aggregate tong hop query vs list include
             query=spec.Includes.Aggregate(query,(current,include)=> current.Include(include));
             return query;
         }

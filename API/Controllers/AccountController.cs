@@ -80,6 +80,7 @@ namespace API.Controllers
         {
 
             var user = await _userManager.FindByEmailFromClaimsPriciple(HttpContext.User);
+            var token = await _tokenService.CreateToken(user);
             return new UserDto
             {
                 Email = user.Email,
@@ -89,7 +90,7 @@ namespace API.Controllers
                 Birthday = user.Birthday,
                 Gender = user.Gender,
                 Phone = user.Phone,
-                Token = await _tokenService.CreateToken(user)
+                Token = token.Access_Token
 
             };
         }
@@ -102,7 +103,8 @@ namespace API.Controllers
         [HttpGet("address")]
         public async Task<ActionResult<AddressDto>> GetUserAddress()
         {
-            var user = await _userManager.FindByUserByClaimsPricipleEmailWithAddressAsync(HttpContext.User);
+            var user = await _userManager.FindByUserByClaimsPricipleEmailWithAddressAsync(User);
+            // can update var email = User.FindFirstValue(ClaimTypes.Email);
             return _mapper.Map<Address, AddressDto>(user.Address);
         }
 
@@ -131,6 +133,7 @@ namespace API.Controllers
             };
             var result = await _userManager.CreateAsync(user, userToCreate.Password);
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+            var token = await _tokenService.CreateToken(user);
             return new UserDto
             {
 
@@ -140,7 +143,7 @@ namespace API.Controllers
                 Birthday = user.Birthday,
                 Gender = user.Gender,
                 Phone = user.Phone,
-                Token = await _tokenService.CreateToken(user),
+                Token = token.Access_Token,
                 Email = user.Email
             };
         }
@@ -249,7 +252,20 @@ namespace API.Controllers
            if (result.IsLockedOut) return Unauthorized(new ApiResponse(403,"Your account is locked"));
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
             
+            var token = await _tokenService.CreateToken(user);
 
+            if (token == null)
+            {
+                return Unauthorized("Invalid Attempt!");
+            }
+            UserRefreshTokens obj = new UserRefreshTokens
+            {               
+                RefreshToken = token.Refresh_Token,
+                UserName = user.UserName
+            };
+            _unitOfWork.Repository<UserRefreshTokens>().Add(obj);
+            var resultToken = await _unitOfWork.Complete();
+            
             return new UserDto
             {
                 Email = user.Email,
@@ -259,8 +275,50 @@ namespace API.Controllers
                 Birthday = user.Birthday,
                 Gender = user.Gender,
                 Phone = user.Phone,
-                Token = await _tokenService.CreateToken(user)
+                Token = token.Access_Token,
+                RefreshToken = token.Refresh_Token
             };
+        }
+        [HttpPost("refresh")]
+        public async Task<ActionResult> Refresh(Tokens token)
+        {
+            var principal = _tokenService.GetPrincipalFromExpiredToken(token.Access_Token);
+            var username = principal.Identity?.Name;
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return Unauthorized(new ApiResponse(401));
+            //retrieve the saved refresh token from database
+            var spec = new TokenSavedWithUsernameAndRefreshTokenSpecification(username, token.Refresh_Token);
+            var savedRefreshToken = await _unitOfWork.Repository<UserRefreshTokens>().GetEntityWithSpec(spec);
+
+            if (savedRefreshToken == null) return Unauthorized("Not found token");
+            if (savedRefreshToken.RefreshToken != token.Refresh_Token)
+            {
+                return Unauthorized("Invalid attempt!");
+            }
+
+            var newJwtToken = await _tokenService.GenerateRefreshToken(user);
+
+            if (newJwtToken == null)
+            {
+                return Unauthorized("Invalid attempt!");
+            }
+
+            // saving refresh token to the db
+            UserRefreshTokens obj = new UserRefreshTokens
+            {
+                RefreshToken = newJwtToken.Refresh_Token,
+                UserName = username
+            };
+
+            _unitOfWork.Repository<UserRefreshTokens>().Delete(savedRefreshToken);
+            _unitOfWork.Repository<UserRefreshTokens>().Add(obj);
+          //  userServiceRepository.DeleteUserRefreshTokens(username, token.Refresh_Token);
+          //  userServiceRepository.AddUserRefreshTokens(obj);
+           // userServiceRepository.SaveCommit();
+            var result = await _unitOfWork.Complete();
+
+            if (result <= 0) return BadRequest(new ApiResponse(400, "Problem creating token to database"));
+            return Ok(newJwtToken);
         }
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
@@ -281,10 +339,11 @@ namespace API.Controllers
             };
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+            var token = await _tokenService.CreateToken(user);
             return new UserDto
             {
                 DisplayName = user.DisplayName,
-                Token = await _tokenService.CreateToken(user),
+                Token = token.Access_Token,
                 Email = user.Email
             };
         }

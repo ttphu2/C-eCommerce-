@@ -36,7 +36,8 @@ export class AccountService {
 
   loadCurrentUser(token: string){
     if (token === null) {
-      this.currentUserSource.next(null as any);
+      this.currentUserSource.next(null!);
+
       return of(null as any);
     }
     let headers = new HttpHeaders();

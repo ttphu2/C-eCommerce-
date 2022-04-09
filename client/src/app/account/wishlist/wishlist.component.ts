@@ -1,32 +1,30 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { IProduct, IWish } from 'src/app/shared/models/product';
+import { IUser } from 'src/app/shared/models/user';
 import { AccountService } from '../account.service';
 
 @Component({
   selector: 'app-wishlist',
   templateUrl: './wishlist.component.html',
-  styleUrls: ['./wishlist.component.scss']
+  styleUrls: ['./wishlist.component.scss'],
 })
 export class WishlistComponent implements OnInit {
-
   products: IWish[];
-  constructor(private accountService: AccountService) { }
+  constructor(private accountService: AccountService) {}
 
   ngOnInit(): void {
     this.loadWishList();
-
   }
-  loadWishList()
-  {
+  loadWishList() {
     this.accountService.getWishList().subscribe((response: any) => {
       this.products = response;
       console.log(this.products);
     });
   }
-  handleRemoveFromWishList(id: number){
+  handleRemoveFromWishList(id: number) {
     this.accountService.removeFromWishlist(id).subscribe(() => {
-      this.products = this.products.filter(i => i.productId !== id);
+      this.products = this.products.filter((i) => i.productId !== id);
     });
   }
-
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Core.Entities.Identity;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,16 +30,32 @@ namespace API.Extensions
 
 
             builder.AddSignInManager<SignInManager<AppUser>>();
+            //setting cho identity su dung token
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => 
                 {
+                    options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
-                        ValidIssuer = config["Token:Issuer"],
-                        ValidateIssuer = true,
-                        ValidateAudience = false
+                        ValidateIssuerSigningKey = true, // xác minh rằng khóa được sử dụng để ký mã thông báo đến là một phần của danh sách các khóa đáng tin cậy
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])), //secret key cua chung ta
+                        ValidIssuer = config["Token:Issuer"], //Thông tin của server tạo ra AccessToken
+                     //   ValidAudience = config["JWT:Audience"], //Thông tin
+                        ValidateIssuer = true, //Kiểm tra xem server render của Access Token
+                        ValidateAudience = false, //  đảm bảo rằng người nhận mã thông báo được ủy quyền nhận nó
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero // độ lệch đồng hồ nếu để default là 5 phút thì token sẽ token sẽ sống thêm 5p chỉnh về 0 để token đie chính xác
+                    };
+                    options.Events = new JwtBearerEvents {
+                    //add event nếu token hết hạn thì thêm vào response IS-TOKEN-EXPIRED = true
+                    // để client có thể biết là gọi refresh token
+                    OnAuthenticationFailed = context => {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("IS-TOKEN-EXPIRED", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
                     };
                 });
             return services;

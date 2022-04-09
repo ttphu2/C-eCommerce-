@@ -24,6 +24,7 @@ namespace Infrastructure.Data
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<WarehouseReceipt> WarehouseReceipts { get; set; }
+        public DbSet<UserRefreshTokens> UserRefreshTokens { get; set; }
       //  public DbSet<ReceiptDetail> ReceiptDetails { get; set; }
         
 

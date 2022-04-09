@@ -1,17 +1,20 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AccountService } from '../account/account.service';
 import { IBrand } from '../shared/models/brand';
 import { IProduct } from '../shared/models/product';
 import { IType } from '../shared/models/productType';
 import { ShopParams } from '../shared/models/shopParams';
+import { IUser } from '../shared/models/user';
 import { ShopService } from './shop.service';
 
 @Component({
   selector: 'app-shop',
   templateUrl: './shop.component.html',
-  styleUrls: ['./shop.component.scss']
+  styleUrls: ['./shop.component.scss'],
 })
 export class ShopComponent implements OnInit {
-  @ViewChild('search',{static: false}) searchTerm: ElementRef;
+  @ViewChild('search', { static: false }) searchTerm: ElementRef;
   products?: IProduct[];
   wishList: number[] = [];
   brands: IBrand[];
@@ -19,62 +22,87 @@ export class ShopComponent implements OnInit {
   shopParams: ShopParams;
   totalCount: number;
   sortOptions = [
-    {name: 'Alphabetical', value: 'name'},
-    {name: 'Price: Low to High', value: 'priceAsc'},
-    {name: 'Price: High to Low', value: 'priceDesc'}
+    { name: 'Alphabetical', value: 'name' },
+    { name: 'Price: Low to High', value: 'priceAsc' },
+    { name: 'Price: High to Low', value: 'priceDesc' },
   ];
 
-
-  constructor(private shopService: ShopService) {
+  currentUser$: Observable<IUser>;
+  checkUser: boolean;
+  constructor(
+    private shopService: ShopService,
+    private accountService: AccountService
+  ) {
     this.shopParams = this.shopService.getShopParams();
-   }
+  }
 
   ngOnInit(): void {
+    console.log('CON CAC');
+    this.currentUser$ = this.accountService.currentUser$;
+
     this.getProducts(true);
     this.getBrands();
     this.getTypes();
-    this.getWishList();
-
-  }
-  getProducts(useCache = false){
-    this.shopService.getProducts(useCache).subscribe(response => {
-      this.products = response!.data;
-      this.totalCount = response!.count;
-
-    }, error => {
-      console.log(error);
+    this.currentUser$.subscribe((user) => {
+      if (user) {
+        console.log('dang nhap');
+        this.getWishList();
+      } else {
+        console.log('chua dang nhap');
+      }
     });
+    this.currentUser$;
   }
-  getWishList(){
-    this.shopService.getWishList().subscribe(response => {
-      this.wishList = response;
-      console.log(this.wishList);
-    }, error => {
-      console.log(error);
-    });
+  getProducts(useCache = false) {
+    this.shopService.getProducts(useCache).subscribe(
+      (response) => {
+        this.products = response!.data;
+        this.totalCount = response!.count;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
-  getBrands(){
-    this.shopService.getBrands().subscribe(response => {
-      this.brands = [{id: 0, name: "All"}, ...response];
-    }, error => {
-      console.log(error);
-    });
+  getWishList() {
+    this.shopService.getWishList().subscribe(
+      (response) => {
+        this.wishList = response;
+        console.log(this.wishList);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
-  getTypes(){
-    this.shopService.getTypes().subscribe(response => {
-      this.types = [{id: 0, name: "All"}, ...response];
-    }, error => {
-      console.log(error);
-    });
+  getBrands() {
+    this.shopService.getBrands().subscribe(
+      (response) => {
+        this.brands = [{ id: 0, name: 'All' }, ...response];
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
-  onBrandSelected(brandId: number){
+  getTypes() {
+    this.shopService.getTypes().subscribe(
+      (response) => {
+        this.types = [{ id: 0, name: 'All' }, ...response];
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+  onBrandSelected(brandId: number) {
     const params = this.shopService.getShopParams();
     params.brandId = brandId;
     params.pageNumber = 1;
     this.shopService.setShopParams(params);
     this.getProducts();
   }
-  onTypeSelected(typeId: number){
+  onTypeSelected(typeId: number) {
     const params = this.shopService.getShopParams();
     params.typeId = typeId;
     params.pageNumber = 1;
@@ -87,18 +115,17 @@ export class ShopComponent implements OnInit {
     this.shopService.setShopParams(params);
     this.getProducts();
   }
-  onPageChanged(event: any){
+  onPageChanged(event: any) {
     const params = this.shopService.getShopParams();
-    if ( params.pageNumber !== event) {
-
-      if((event - this.shopParams.pageNumber) >= 2){
-        const temp = this.shopParams.pageNumber + event -1;
+    if (params.pageNumber !== event) {
+      if (event - this.shopParams.pageNumber >= 2) {
+        const temp = this.shopParams.pageNumber + event - 1;
         const pageNumber = this.shopParams.pageNumber;
         for (let index = pageNumber + 1; index < temp; index++) {
           params.pageNumber = index;
           this.shopService.setShopParams(params);
           this.getProducts(true);
-          console.log("GET PAGE 2");
+          console.log('GET PAGE 2');
         }
       }
       params.pageNumber = event;
@@ -106,14 +133,14 @@ export class ShopComponent implements OnInit {
       this.getProducts(true);
     }
   }
-  onSearch(){
+  onSearch() {
     const params = this.shopService.getShopParams();
     params.search = this.searchTerm.nativeElement.value;
     params.pageNumber = 1;
     this.shopService.setShopParams(params);
     this.getProducts();
   }
-  onReset(){
+  onReset() {
     this.searchTerm.nativeElement.value = '';
     this.shopParams = new ShopParams();
     this.shopService.setShopParams(this.shopParams);
